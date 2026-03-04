@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
+    <title>Spotify Listening Analyzer</title>
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <form method="post" enctype="multipart/form-data">
-        <div>
-            <label for="file">Choose file to upload</label>
-            <input type="file" id="file" name="file" accept=".json" multiple />
+    <div class="page-title">
+        <img src="../static/images/spotify-icon.png" class="spotify-icon">
+        <h1>Spotify Listening <span class="highlight">Analyzer</span></h1>
+    </div>
+    <div class="container">
+        <div class="upload-card">
+            <img src="../static/images/upload-icon.png" class="upload-icon">
+            <div class="upload-card-title">Upload Your Spotify JSON File to Get Started</div>
+            <form class="upload-form">
+                <div class="file-upload">
+                    <input id="file" class="file-input" type="file" accept=".json" multiple />
+                    <label for="file" class="file-btn">Choose File</label>
+                    <span id="fileName" class="file-name">No files chosen</span>
+                </div>
+                <div>
+                    <button class="analyze-submit-btn">Analyze My Listening</button>
+                </div>
+            </form>
         </div>
-        <div>
-            <button>Submit</button>
-        </div>
-    </form>
+    </div>
 </body>
 </html>
