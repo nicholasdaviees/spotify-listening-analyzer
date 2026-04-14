@@ -1,15 +1,34 @@
+from flask import Flask, request, jsonify, render_template
 import json
 
-file_path = "listeningHistoryData/StreamingHistory_music_0.json"
+app = Flask(__name__)
 
-with open(file_path, 'r') as file:
-    data = json.load(file)
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-for entry in data:
-    artist = entry["artistName"]
-    song = entry["trackName"]
-    ms = entry["msPlayed"]
+@app.route("/upload", methods=["POST"])
+def upload_files():
+    files = request.files.getlist("jsonFiles")
+    all_data = []
 
-    print(f"Artist: {artist}\n")
-    print(f"Song: {song}\n")
-    print(f"Minutes Played: {ms / 60000:.2f} minutes\n\n")
+    for file in files:
+        try:
+            data = json.load(file)
+            all_data.append({
+                "filename": file.filename,
+                "content": data
+            })
+        except Exception as e:
+            all_data.append({
+                "filename": file.filename,
+                "error": str(e)
+            })
+
+    for song in data:
+        print(f"Song: {song['trackName']} by {song['artistName']}")
+
+    return jsonify(all_data)
+
+if __name__ == "__main__":
+    app.run(debug=True)
