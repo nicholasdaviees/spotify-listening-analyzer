@@ -3,17 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
+    <title>Spotify Listening Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <form method="post" enctype="multipart/form-data">
-        <div>
-            <label for="file">Choose file to upload</label>
-            <input type="file" id="file" name="file" accept=".json" multiple />
+    <div class="page-title">
+        <img src="{{ url_for('static', filename='images/spotify-icon.png') }}" class="spotify-icon">
+        <h1>Spotify Listening <span class="highlight">Analyzer</span></h1>
+    </div>
+
+    <div class="container">
+        <div class="upload-card">
+            <img src="{{ url_for('static', filename='images/upload-icon.png') }}" class="upload-icon">
+            <div class="upload-card-title">Upload Your Spotify JSON File to Get Started</div>
+
+            <form id="upload-form" class="upload-form">
+                <div class="file-upload">
+                    <input id="jsonFiles" name="jsonFiles" class="file-input" type="file" accept=".json" multiple />
+                    <label for="jsonFiles" class="file-btn">Choose File</label>
+                    <span id="fileName" class="file-name">No files chosen</span>
+                </div>
+                <div>
+                    <button type="submit" class="analyze-submit-btn">Analyze My Listening</button>
+                </div>
+            </form>
+
         </div>
-        <div>
-            <button>Submit</button>
-        </div>
-    </form>
+    </div>
+    <script>
+        const form = document.getElementById("upload-form");
+        const input = document.getElementById("jsonFiles");
+        const fileName = document.getElementById("fileName");
+
+        input.addEventListener("change", () => {
+            if (input.files.length === 0) {
+                fileName.textContent = "No files chosen";
+            } else if (input.files.length === 1) {
+                fileName.textContent = input.files[0].name;
+            } else {
+                fileName.textContent = `${input.files.length} files chosen`;
+            }
+        });
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData();
+
+            for (const file of input.files) {
+                formData.append("jsonFiles", file);
+            }
+
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            console.log(result);
+        });
+    </script>
 </body>
 </html>
