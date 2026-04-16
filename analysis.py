@@ -1,1 +1,66 @@
-print("Hello world")
+from collections import defaultdict
+from datetime import datetime
+
+def ms_to_min(ms):
+    return ms / 60000
+
+def calculateListeningStats(listeningHistory):
+    total_listening_time_ms = 0
+    artist_totals = defaultdict(int)
+    song_total_ms = defaultdict(int)
+    song_total_count = defaultdict(int)
+    day_totals = defaultdict(int)
+    #genre_totals = defaultdict(int)
+    #listening_age_totals = defaultdict(int)
+    #listening_span
+
+    for entry in listeningHistory:
+        artist = entry.get("artistName", "").strip()
+        track = entry.get("trackName", "").strip()
+        end_time = entry.get("endTime")
+        ms_played = entry.get("msPlayed", 0)
+
+        if not artist or not track or not end_time:
+            continue
+
+        # Calculate total listening time
+        total_listening_time_ms += ms_played
+
+        # Calculate artist totals
+        artist_totals[artist] += ms_played
+
+        # Calculate song totals
+        song_key = f"{artist} - {track}"
+        song_total_ms[song_key] += ms_played
+        song_total_count[song_key] += 1
+
+        # Calculate day totals
+        date = datetime.strptime(end_time, "%Y-%m-%d %H:%M")
+        day_key = date.date().isoformat()
+        day_totals[day_key] += ms_played
+
+    top_artist = max(artist_totals.items(), key=lambda x: x[1], default=(None, 0))
+    top_song = max(song_total_ms.items(), key=lambda x: x[1], default=(None, 0))
+    top_day = max(day_totals.items(), key=lambda x: x[1], default=(None, 0))
+
+    result = {
+        "topArtist": {
+            "name": top_artist[0],
+            "minutes": ms_to_min(top_artist[1])
+        },
+        "topSongMin": {
+            "name": top_song[0],
+            "minutes": ms_to_min(top_song[1])
+        },
+        "topSongCount": {
+            "name": top_song[0],
+            "count": song_total_count[top_song[0]]
+        },
+        "topDay": {
+            "date": top_day[0],
+            "minutes": ms_to_min(top_day[1])
+        },
+        "totalListeningTime": ms_to_min(total_listening_time_ms)
+    }
+
+    return result
