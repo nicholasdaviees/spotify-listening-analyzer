@@ -73,9 +73,11 @@ h1 {
   align-items: center;
 }
 
-/* TOP ARTIST, SONG, & DAY */
+/* Begin top artist, song, and day */
 .artist-card, .song-card, .day-card {
-  width: 340px;
+  width: fit-content;
+  min-width: 280px;
+  max-width: 400px;
   border-radius: 20px;
   padding: 22px 24px;
   position: relative;
@@ -84,25 +86,43 @@ h1 {
   box-shadow: 0 0px 10px #65D56E;
 }
 
-.artist-content, .song-content, .day-content {
+.artist-content, .song-content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 15px;
+}
+
+.day-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .artist, .song, .day {
+  max-width: 520px; 
   margin: 0 0 18px;
   font-size: 22px;
   font-weight: 800;
   color: #65D56E;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
-.artist-avatar-wrap, .song-avatar-wrap, .day-avatar-wrap {
+.artist-avatar-wrap, .song-avatar-wrap {
   position: relative;
   width: 94px;
   height: 94px;
   flex-shrink: 0;
   top: 4px;
+}
+
+.day-avatar-wrap {
+  position: relative;
+  width: 94px;
+  height: 94px;
+  flex-shrink: 0;
 }
 
 .artist-avatar, .song-avatar, .day-avatar {
@@ -115,21 +135,52 @@ h1 {
   box-shadow: 0 0px 8px #65D56E;
 }
 
-/* Top song specific for square album art */
-.song-avatar {
-  border-radius: 10%;
-}
-/* Top song specific */
-
 .artist-avatar img, .song-avatar img, .day-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
+/* End top artist, song, and day */
 
+/* Begin top song specifics*/
+.song-avatar {
+  border-radius: 10%;
+}
 
+.song-left {
+  flex: 1;
+  min-width: 0;
+}
+/* End top song specific */
 
+/* Begin top day specific */
+.day-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10%;
+  text-align: center;
+}
 
+.day-avatar-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
+  transform: translateY(4px);
+}
 
+.top-weekday {
+  font-size: 16px;
+  font-weight: 700;
+  color: #65D56E;
+  letter-spacing: 1px;
+}
+
+.top-day {
+  font-size: 36px;
+  font-weight: 800;
+  color: #e0e0e0;
+}
+/* End top day specific */

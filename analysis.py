@@ -43,7 +43,7 @@ def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
 
         # Calculate day totals
         date = datetime.strptime(end_time, "%Y-%m-%d %H:%M")
-        day_key = date.date().isoformat()
+        day_key = date.date()
         day_totals[day_key] += ms_played
 
     top_artist = max(artist_totals.items(), key=lambda x: x[1], default=(None, 0))
@@ -64,7 +64,9 @@ def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
             "count": song_total_count[top_song[0]]
         },
         "topDay": {
-            "date": top_day[0],
+            "full_date": top_day[0].strftime("%m-%d-%Y"),
+            "weekday": top_day[0].strftime("%a").upper(),
+            "day": top_day[0].day,
             "minutes": ms_to_min(top_day[1])
         },
         "totalListeningTime": ms_to_min(total_listening_time_ms)
