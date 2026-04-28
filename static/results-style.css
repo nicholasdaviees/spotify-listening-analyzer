@@ -8,27 +8,110 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-.page-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 2%;
+.content-wrap {
+  width: fit-content;
+  margin: 0 auto;
 }
 
-h1 {
-  font-size: 60px;
-  color: white;
+/* Begin header style */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5%;
+  margin-bottom: 0px;
+}
+
+.spotify-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.website-title {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px;
 }
 
 .highlight {
   color: #65D56E;
 }
 
+.plus-icon {
+  width: 40px;
+  height: 40px;
+  color: #65D56E;
+  flex-shrink: 0;
+  display: block;
+}
+
+.new-analysis-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  height: 25px;
+  padding: 8px 22px;
+  border-radius: 999px;
+
+  background: #1F1E1E;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+
+  border: none;
+  box-shadow: 0 0px 10px #65D56E;
+  transition: all 0.3s ease;
+}
+
+.new-analysis-btn:hover {
+  box-shadow: 0 0px 18px #65D56E;
+}
+
+.new-analysis-btn:active {
+  transform: scale(0.97);
+}
+/* End header style */
+
+/* Begin page title style */
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+h1 { /* Highlight "Results" in page title */
+  font-size: 54px;
+  color: white;
+  margin: 0;
+}
+/* End page title style */
+
+/* Begin results page style */
 .listening-stats-top {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: center;
+  align-items: stretch;
+  gap: 50px;
+  padding: 0;
+  flex-wrap: wrap;
 }
 
 .icon {
@@ -73,7 +156,7 @@ h1 {
   align-items: center;
 }
 
-/* Begin top artist, song, and day */
+/* Begin top artist, song, and day general style */
 .artist-card, .song-card, .day-card {
   width: fit-content;
   min-width: 280px;
@@ -141,9 +224,9 @@ h1 {
   object-fit: cover;
   display: block;
 }
-/* End top artist, song, and day */
+/* End top artist, song, and day general style */
 
-/* Begin top song specifics*/
+/* Begin top song specific style */
 .song-avatar {
   border-radius: 10%;
 }
@@ -152,9 +235,9 @@ h1 {
   flex: 1;
   min-width: 0;
 }
-/* End top song specific */
+/* End top song specific style */
 
-/* Begin top day specific */
+/* Begin top day specific style */
 .day-avatar {
   display: flex;
   justify-content: center;
@@ -183,4 +266,4 @@ h1 {
   font-weight: 800;
   color: #e0e0e0;
 }
-/* End top day specific */
+/* End top day specific style */
