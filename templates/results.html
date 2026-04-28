@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='results-style.css') }}">
+</head>
+<body>
+
+<div class="page-title">
+    <h1>Your Listening <span class="highlight">Results</span></h1>
+</div>
+
+<div class="listening-stats-top">
+
+    <!-- BEGIN TOP ARTIST -->
+    <div class="artist-card">
+        <div class="artist-content">
+
+            <div class="artist-left">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21a8 8 0 0 0-16 0"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+
+                <p class="label">Top Artist</p>
+                <h2 class="artist">{{ result.topArtist.name }}</h2>
+
+                <div class="minutes-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7v6l4 2"></path>
+                    </svg>
+                    <span>{{ "%.2f"|format(result.topArtist.minutes) }} minutes</span>
+                </div>
+            </div>
+
+            <div class="artist-avatar-wrap">
+                <div class="artist-avatar">
+                    <!-- FIX -->
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"/>
+                    <!-- FIX -->
+                </div>   
+            </div>
+        </div>         
+    </div>
+    <!-- END TOP ARTIST -->
+
+    <!-- BEGIN TOP SONG -->
+    <div class="song-card">
+        <div class="song-content">
+
+            <div class="song-left">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21a8 8 0 0 0-16 0"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+
+                <p class="label">Top Song</p>
+                <h2 class="song">{{ result.topSongMin.name }}</h2>
+            </div>
+
+            <div class="song-avatar-wrap">
+                <div class="song-avatar">
+                    <!-- FIX -->
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"/>
+                    <!-- FIX -->
+                </div>
+            </div>
+        </div>
+
+        <div class="pills">
+            <div class="minutes-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 7v6l4 2"></path>
+                </svg>
+                <span>{{ "%.2f"|format(result.topSongMin.minutes) }} minutes</span>
+            </div>
+            <div class="plays-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M12 7v6l4 2"></path>
+                </svg>
+                <span>{{ result.topSongCount.count }} plays</span>
+            </div>
+        </div>      
+    </div>
+    <!-- END TOP SONG -->
+
+    <!-- BEGIN TOP DAY -->
+    <div class="day-card">
+        <div class="day-content">
+
+            <div class="day-left">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21a8 8 0 0 0-16 0"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+
+                <p class="label">Top Day</p>
+                <h2 class="day">{{ result.topDay.date }}</h2>
+
+                <div class="minutes-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 7v6l4 2"></path>
+                    </svg>
+                    <span>{{ "%.2f"|format(result.topDay.minutes) }} minutes</span>
+                </div>
+            </div>
+
+            <div class="artist-avatar-wrap">
+                <div class="artist-avatar">
+                    <!-- FIX -->
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"/>
+                    <!-- FIX -->
+                </div>   
+            </div>
+        </div>         
+    </div>
+    <!-- END TOP ARTIST -->
+</div>    
+
+<!-- FIX -->
+<div class="bottom-actions">
+    <a href="/" class="btn">← Back</a>
+</div>
+<!-- FIX -->
+ 
+</body>
+</html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify Listening Analyzer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='index-style.css') }}">
 </head>
 <body>
     <div class="page-title">
@@ -17,12 +17,26 @@
             <img src="{{ url_for('static', filename='images/upload-icon.png') }}" class="upload-icon">
             <div class="upload-card-title">Upload Your Spotify JSON File to Get Started</div>
 
-            <form id="upload-form" class="upload-form">
+            <form id="upload-form" class="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
                 <div class="file-upload">
                     <input id="jsonFiles" name="jsonFiles" class="file-input" type="file" accept=".json" multiple />
                     <label for="jsonFiles" class="file-btn">Choose File</label>
                     <span id="fileName" class="file-name">No files chosen</span>
                 </div>
+
+                <p class="date-filter">Filter by date range (optional)</p>
+                <div class="date-group">
+                    <div class="date-field">
+                        <label>From:</label>
+                        <input type="date" name="startDate">
+                    </div>
+
+                    <div class="date-field">
+                        <label>To:</label>
+                        <input type="date" name="endDate">
+                    </div>
+                </div>  
+                
                 <div>
                     <button type="submit" class="analyze-submit-btn">Analyze My Listening</button>
                 </div>
@@ -30,6 +44,7 @@
 
         </div>
     </div>
+    
     <script>
         const form = document.getElementById("upload-form");
         const input = document.getElementById("jsonFiles");
@@ -43,24 +58,6 @@
             } else {
                 fileName.textContent = `${input.files.length} files chosen`;
             }
-        });
-
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData();
-
-            for (const file of input.files) {
-                formData.append("jsonFiles", file);
-            }
-
-            const response = await fetch("/upload", {
-                method: "POST",
-                body: formData
-            });
-
-            const result = await response.json();
-            console.log(result);
         });
     </script>
 </body>

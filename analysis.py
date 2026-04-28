@@ -4,15 +4,14 @@ from datetime import datetime
 def ms_to_min(ms):
     return ms / 60000
 
-def calculateListeningStats(listeningHistory):
+def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
     total_listening_time_ms = 0
     artist_totals = defaultdict(int)
     song_total_ms = defaultdict(int)
     song_total_count = defaultdict(int)
     day_totals = defaultdict(int)
-    #genre_totals = defaultdict(int)
-    #listening_age_totals = defaultdict(int)
-    #listening_span
+    start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date() if start_date else None
+    end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date() if end_date else None
 
     for entry in listeningHistory:
         artist = entry.get("artistName", "").strip()
@@ -21,6 +20,14 @@ def calculateListeningStats(listeningHistory):
         ms_played = entry.get("msPlayed", 0)
 
         if not artist or not track or not end_time:
+            continue
+
+        date = datetime.strptime(end_time, "%Y-%m-%d %H:%M")
+        entry_date = date.date()
+
+        if start_date_obj and entry_date < start_date_obj:
+            continue
+        if end_date_obj and entry_date > end_date_obj:
             continue
 
         # Calculate total listening time

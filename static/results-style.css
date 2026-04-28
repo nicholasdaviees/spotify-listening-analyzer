@@ -1,0 +1,135 @@
+body {
+  background-image: url("images/background-image.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 2%;
+}
+
+h1 {
+  font-size: 60px;
+  color: white;
+}
+
+.highlight {
+  color: #65D56E;
+}
+
+.listening-stats-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon {
+  width: 36px;
+  height: 36px;
+  color: #65D56E;
+  margin-bottom: 18px;
+}
+
+.label {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #a5a5a5;
+}
+
+.minutes-pill, .plays-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #333232;
+  color: #f0f0f0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.plays-pill {
+  margin-left: 10px;
+}
+
+.minutes-pill svg, .plays-pill svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pills {
+  display: flex;
+  align-items: center;
+}
+
+/* TOP ARTIST, SONG, & DAY */
+.artist-card, .song-card, .day-card {
+  width: 340px;
+  border-radius: 20px;
+  padding: 22px 24px;
+  position: relative;
+  color: #fff;
+  background: #1F1E1E;
+  box-shadow: 0 0px 10px #65D56E;
+}
+
+.artist-content, .song-content, .day-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.artist, .song, .day {
+  margin: 0 0 18px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #65D56E;
+}
+
+.artist-avatar-wrap, .song-avatar-wrap, .day-avatar-wrap {
+  position: relative;
+  width: 94px;
+  height: 94px;
+  flex-shrink: 0;
+  top: 4px;
+}
+
+.artist-avatar, .song-avatar, .day-avatar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 0px 8px #65D56E;
+}
+
+/* Top song specific for square album art */
+.song-avatar {
+  border-radius: 10%;
+}
+/* Top song specific */
+
+.artist-avatar img, .song-avatar img, .day-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+
+
+
+
