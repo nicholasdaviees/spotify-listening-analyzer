@@ -94,7 +94,7 @@ body {
   text-align: center;
   gap: 10px;
   margin-top: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 }
 
 h1 { /* Highlight "Results" in page title */
@@ -108,7 +108,7 @@ h1 { /* Highlight "Results" in page title */
 .listening-stats-top {
   display: flex;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;
   gap: 50px;
   padding: 0;
   flex-wrap: wrap;
