@@ -150,12 +150,43 @@
 
                 </div>         
             </div>
-            <!-- END TOP ARTIST -->
-
-            <!-- TODO: Add Listening Overview section with and total listening time (minutes, hours, days) and total listening time per month shown as graph. -->
-            <!-- TODO: Add button to go to LLM chatbot -->
-             
+            <!-- END TOP ARTIST --> 
         </div>
+        <!-- BEGIN TOTAL LISTENING TIME -->
+        <div class="listening-stats-bottom"> 
+            <div class="total-listening-time-card">
+                <div class="total-listening-time-content">
+
+                    <div class="total-listening-time-left">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12h4l2.2-6 4 14 2.4-8H21"></path>
+                        </svg>
+
+                        <p class="label">TOTAL LISTENING TIME</p>
+                        <h2 class="total-listening-time-min">{{ "{:,.0f}".format(result.totalListeningTime.minutes) }} minutes</h2>
+                    </div>
+
+                    <div class="total-listening-time-avatar-wrap">
+                        <div class="total-listening-time-avatar">
+                            <!-- FIX -->
+                            <img src="{{ url_for('static', filename='images/total_listening_time_card_image.png') }}" />
+                            <!-- FIX -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <p class="total-listening-time-hours-days">
+                    {{ "{:,.0f}".format(result.totalListeningTime.hours) }} hours
+                    <span class="dot">•</span>
+                    {{ "{:.1f}".format(result.totalListeningTime.days) }} days
+                </p>     
+            </div>
+            <!-- END TOTAL LISTENING TIME -->
+
+            <!-- TODO: Add Listening Overview section with total listening time per month shown as graph. -->
+            <!-- TODO: Add button to go to LLM chatbot -->
+        </div>     
     </div>    
  </div>   
 

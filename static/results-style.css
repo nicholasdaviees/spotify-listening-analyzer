@@ -114,6 +114,16 @@ h1 { /* Highlight "Results" in page title */
   flex-wrap: wrap;
 }
 
+.listening-stats-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  padding: 0;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
 .icon {
   width: 36px;
   height: 36px;
@@ -156,8 +166,8 @@ h1 { /* Highlight "Results" in page title */
   align-items: center;
 }
 
-/* Begin top artist, song, and day general style */
-.artist-card, .song-card, .day-card {
+/* Begin stats general style */
+.artist-card, .song-card, .day-card, .total-listening-time-card {
   width: fit-content;
   min-width: 280px;
   max-width: 400px;
@@ -169,7 +179,7 @@ h1 { /* Highlight "Results" in page title */
   box-shadow: 0 0px 10px #65D56E;
 }
 
-.artist-content, .song-content {
+.artist-content, .song-content, .total-listening-time-content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -182,7 +192,7 @@ h1 { /* Highlight "Results" in page title */
   align-items: center;
 }
 
-.artist, .song, .day {
+.artist, .song, .day, .total-listening-time-min{
   max-width: 520px; 
   margin: 0 0 18px;
   font-size: 22px;
@@ -198,6 +208,14 @@ h1 { /* Highlight "Results" in page title */
   width: 94px;
   height: 94px;
   flex-shrink: 0;
+  top: 4px;
+}
+
+.total-listening-time-avatar-wrap {
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+  position: relative;
   top: 4px;
 }
 
@@ -218,13 +236,29 @@ h1 { /* Highlight "Results" in page title */
   box-shadow: 0 0px 8px #65D56E;
 }
 
+.total-listening-time-avatar {
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+}
+
 .artist-avatar img, .song-avatar img, .day-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-/* End top artist, song, and day general style */
+
+.total-listening-time-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: translateX(8%);
+}
+/* End stats general style */
 
 /* Begin top song specific style */
 .song-avatar {
@@ -267,3 +301,21 @@ h1 { /* Highlight "Results" in page title */
   color: #e0e0e0;
 }
 /* End top day specific style */
+
+/* Begin listening time specific style */
+.total-listening-time-hours-days {
+  color: #a5a5a5;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.dot {
+  font-size: 18px;
+  line-height: 1;
+  color: #a5a5a5;
+}
+/* End listening time specific style */
