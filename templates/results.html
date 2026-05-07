@@ -20,7 +20,7 @@
             </div>
 
             <a href="/" class="new-analysis-btn">
-                <svg class="plus-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="plus-icon" viewBox="7 7 10 10" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 7.5v9"></path>
                     <path d="M7.5 12h9"></path>
                 </svg>
@@ -33,9 +33,9 @@
             <h1>Your Listening <span class="highlight">Results</span></h1>
         </div>
 
-        <div class="listening-stats-top">
-
-            <!-- BEGIN TOP ARTIST -->
+        <div class="stats-grid">
+        <!-- BEGIN TOP ROW STATS -->
+        <!-- BEGIN TOP ARTIST -->
             <div class="artist-card">
                 <div class="artist-content">
 
@@ -53,7 +53,7 @@
                                 <circle cx="12" cy="12" r="9"></circle>
                                 <path d="M12 7v6l4 2"></path>
                             </svg>
-                            <span>{{ "%.2f"|format(result.topArtist.minutes) }} minutes</span>
+                            <span>{{ "{:,.0f}".format(result.topArtist.minutes) }} minutes</span>
                         </div>
                     </div>
 
@@ -105,26 +105,72 @@
                         </svg>
                         <span>{{ result.topSongCount.count }} plays</span>
                     </div>
-                </div>      
+                </div>
             </div>
             <!-- END TOP SONG -->
 
+            <!-- BEGIN TOTAL LISTENING TIME -->
+            <div class="total-listening-time-card">
+                <div class="total-listening-time-content">
+
+                    <div class="total-listening-time-left">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12h4l2.2-6 4 14 2.4-8H21"></path>
+                        </svg>
+
+                        <p class="label">TOTAL LISTENING TIME</p>
+                        <h2 class="total-listening-time-min">{{ "{:,.0f}".format(result.totalListeningTime.minutes) }} minutes</h2>
+                    </div>
+
+                    <div class="total-listening-time-avatar-wrap">
+                        <div class="total-listening-time-avatar">
+                            <img src="{{ url_for('static', filename='images/total_listening_time_card_image.png') }}" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="pills">
+                    <div class="hours-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v6l4 2"></path>
+                        </svg>
+                        <span>{{ "{:,.0f}".format(result.totalListeningTime.hours) }} hours</span>
+                    </div>
+                    <div class="days-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <line x1="12" y1="2" x2="12" y2="5"></line>
+                            <line x1="12" y1="19" x2="12" y2="22"></line>
+                            <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"></line>
+                            <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"></line>
+                            <line x1="2" y1="12" x2="5" y2="12"></line>
+                            <line x1="19" y1="12" x2="22" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"></line>
+                            <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <span>{{ "{:.1f}".format(result.totalListeningTime.days) }} days</span>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END TOTAL LISTENING TIME -->
+            <!-- END TOP ROW STATS -->
+
+            <!-- BEGIN BOTTOM ROW STATS -->
             <!-- BEGIN TOP DAY -->
             <div class="day-card">
                 <div class="day-content">
 
                     <div class="day-left">
 
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <!-- Top rings -->
-                            <line x1="8" y1="3" x2="8" y2="6"></line>
-                            <line x1="16" y1="3" x2="16" y2="6"></line>
-
-                            <!-- Top bar -->
-                            <line x1="4" y1="10" x2="20" y2="10"></line>
-
-                            <!-- Calendar body -->
-                            <rect x="4" y="6" width="16" height="14" rx="2"></rect>
+                        <svg class="icon trophy-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 10h24v20c0 7-5 13-12 13S20 37 20 30V10z"></path>
+                            <path d="M20 17H10v5c0 8 5 13 12 14"></path>
+                            <path d="M44 17h10v5c0 8-5 13-12 14"></path>
+                            <path d="M32 43v10"></path>
+                            <path d="M24 56h16"></path>
                         </svg>
 
                         <p class="label">Top Day</p>
@@ -150,45 +196,124 @@
 
                 </div>         
             </div>
-            <!-- END TOP ARTIST --> 
-        </div>
-        <!-- BEGIN TOTAL LISTENING TIME -->
-        <div class="listening-stats-bottom"> 
-            <div class="total-listening-time-card">
-                <div class="total-listening-time-content">
+            <!-- END TOP DAY -->
 
-                    <div class="total-listening-time-left">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 12h4l2.2-6 4 14 2.4-8H21"></path>
+            <!-- BEGIN MONTHLY GRAPH -->
+            <div class="monthly-graph">
+                <div class="graph-left">
+                    <div class="graph-header">
+                        <svg class="graph-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 19V12"></path>
+                            <path d="M9 19V8"></path>
+                            <path d="M13 19V4"></path>
+                            <path d="M17 19V10"></path>
+                            <path d="M3.5 19h3"></path>
+                            <path d="M7.5 19h3"></path>
+                            <path d="M11.5 19h3"></path>
+                            <path d="M15.5 19h3"></path>
+                        </svg>
+                        <h3>Listening Time by Month</h3>
+                    </div>
+                    <p class="sub">Minutes listened</p>
+
+                    <canvas id="monthlyGraph"></canvas>
+                </div>
+            </div>
+            <!-- END MONTHLY GRAPH -->
+
+            <!-- BEGIN TOP MONTH -->
+            <div class="month-card">
+                <div class="month-content">
+
+                    <div class="month-left">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="8" y1="3" x2="8" y2="6"></line>
+                            <line x1="16" y1="3" x2="16" y2="6"></line>
+                            <line x1="4" y1="10" x2="20" y2="10"></line>
+                            <rect x="4" y="6" width="16" height="14" rx="2"></rect>
                         </svg>
 
-                        <p class="label">TOTAL LISTENING TIME</p>
-                        <h2 class="total-listening-time-min">{{ "{:,.0f}".format(result.totalListeningTime.minutes) }} minutes</h2>
-                    </div>
+                        <p class="label">Top Month</p>
+                        <h2 class="month">{{ result.topMonth.month }}</h2>
 
-                    <div class="total-listening-time-avatar-wrap">
-                        <div class="total-listening-time-avatar">
-                            <!-- FIX -->
-                            <img src="{{ url_for('static', filename='images/total_listening_time_card_image.png') }}" />
-                            <!-- FIX -->
+                        <div class="minutes-pill">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <path d="M12 7v6l4 2"></path>
+                            </svg>
+                            <span>{{ "{:,.0f}".format(result.topMonth.minutes) }} minutes</span>
                         </div>
                     </div>
 
+                    <div class="month-donut-wrap">
+                        <div class="month-donut" style="--percent: {{ result.topMonth.percentage }}%;">
+                            <div class="month-donut-center">
+                                <strong>{{ "{:,.0f}".format(result.topMonth.minutes) }}</strong>
+                                <span>min</span>
+                            </div>
+                        </div>
+                        <p class="month-donut-sub">
+                            {{ "{:.0f}".format(result.topMonth.percentage) }}% of total<br>
+                            listening time
+                        </p>
+                    </div>
+
                 </div>
-
-                <p class="total-listening-time-hours-days">
-                    {{ "{:,.0f}".format(result.totalListeningTime.hours) }} hours
-                    <span class="dot">•</span>
-                    {{ "{:.1f}".format(result.totalListeningTime.days) }} days
-                </p>     
             </div>
-            <!-- END TOTAL LISTENING TIME -->
-
-            <!-- TODO: Add Listening Overview section with total listening time per month shown as graph. -->
-            <!-- TODO: Add button to go to LLM chatbot -->
-        </div>     
+            <!-- END TOP MONTH -->
+            <!-- END BOTTOM ROW STATS -->
+        </div>
+        <!-- TODO: Add button to go to LLM chatbot -->
     </div>    
  </div>   
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const monthlyData = JSON.parse('{{ result.monthlyListeningTime | tojson | safe }}');
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const values = months.map((m, i) => {
+    const key = Object.keys(monthlyData).find(k => k.includes((i+1).toString().padStart(2,'0')));
+    return key ? monthlyData[key] : 0;
+    });
 
+    // Bar chart
+    new Chart(document.getElementById('monthlyGraph'), {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [{
+                data: values,
+                backgroundColor: '#65D56E',
+                borderRadius: 0,
+                barPercentage: 0.6
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+
+            scales: {
+                x: {
+                    ticks: { 
+                        color: '#ccc', 
+                        autoSkip: false
+                    },
+                    grid: { 
+                        display: false 
+                    }
+                },
+                y: {
+                    ticks: { 
+                        color: '#aaa' 
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.1)',
+                        borderDash: [5,5]
+                    }
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

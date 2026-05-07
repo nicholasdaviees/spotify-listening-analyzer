@@ -20,6 +20,7 @@ body {
   align-items: center;
   margin-top: 1.5%;
   margin-bottom: 0px;
+  width: 100%;
 }
 
 .spotify-icon {
@@ -47,18 +48,19 @@ body {
 }
 
 .plus-icon {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   color: #65D56E;
   flex-shrink: 0;
   display: block;
+  transform: translateY(-1.5px);
 }
 
 .new-analysis-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
+  gap: 10px;
 
   height: 25px;
   padding: 8px 22px;
@@ -104,24 +106,14 @@ h1 { /* Highlight "Results" in page title */
 }
 /* End page title style */
 
-/* Begin results page style */
-.listening-stats-top {
-  display: flex;
+/* Begin results page general style */
+.stats-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 50px;
+  row-gap: 10px;
   justify-content: center;
   align-items: center;
-  gap: 50px;
-  padding: 0;
-  flex-wrap: wrap;
-}
-
-.listening-stats-bottom {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-  padding: 0;
-  margin-top: 40px;
-  flex-wrap: wrap;
 }
 
 .icon {
@@ -140,7 +132,7 @@ h1 { /* Highlight "Results" in page title */
   color: #a5a5a5;
 }
 
-.minutes-pill, .plays-pill {
+.minutes-pill, .plays-pill, .hours-pill, .days-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -152,11 +144,11 @@ h1 { /* Highlight "Results" in page title */
   font-weight: 700;
 }
 
-.plays-pill {
+.plays-pill, .days-pill {
   margin-left: 10px;
 }
 
-.minutes-pill svg, .plays-pill svg {
+.minutes-pill svg, .plays-pill svg, .hours-pill svg, .days-pill svg {
   width: 16px;
   height: 16px;
 }
@@ -165,12 +157,14 @@ h1 { /* Highlight "Results" in page title */
   display: flex;
   align-items: center;
 }
+/* End results page general style */
 
-/* Begin stats general style */
-.artist-card, .song-card, .day-card, .total-listening-time-card {
-  width: fit-content;
+/* Begin stats general card style */
+.artist-card, .song-card, .total-listening-time-card, .day-card, .month-card {
+  width: 100%;
+  box-sizing: border-box;
   min-width: 280px;
-  max-width: 400px;
+  max-width: none;
   border-radius: 20px;
   padding: 22px 24px;
   position: relative;
@@ -179,20 +173,20 @@ h1 { /* Highlight "Results" in page title */
   box-shadow: 0 0px 10px #65D56E;
 }
 
-.artist-content, .song-content, .total-listening-time-content {
+.artist-content, .song-content, .total-listening-time-content, .day-content {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 15px;
 }
 
-.day-content {
+.month-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.artist, .song, .day, .total-listening-time-min{
+.artist, .song, .total-listening-time-min, .day, .month {
   max-width: 520px; 
   margin: 0 0 18px;
   font-size: 22px;
@@ -203,7 +197,7 @@ h1 { /* Highlight "Results" in page title */
   overflow-wrap: break-word;
 }
 
-.artist-avatar-wrap, .song-avatar-wrap {
+.artist-avatar-wrap, .song-avatar-wrap, .day-avatar-wrap {
   position: relative;
   width: 94px;
   height: 94px;
@@ -217,13 +211,6 @@ h1 { /* Highlight "Results" in page title */
   flex-shrink: 0;
   position: relative;
   top: 4px;
-}
-
-.day-avatar-wrap {
-  position: relative;
-  width: 94px;
-  height: 94px;
-  flex-shrink: 0;
 }
 
 .artist-avatar, .song-avatar, .day-avatar {
@@ -245,7 +232,7 @@ h1 { /* Highlight "Results" in page title */
   background: transparent;
 }
 
-.artist-avatar img, .song-avatar img, .day-avatar img {
+.artist-avatar img, .song-avatar img, .day-avatar img, .month-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -258,7 +245,7 @@ h1 { /* Highlight "Results" in page title */
   object-fit: contain;
   transform: translateX(8%);
 }
-/* End stats general style */
+/* Begin stats general card style */
 
 /* Begin top song specific style */
 .song-avatar {
@@ -268,11 +255,30 @@ h1 { /* Highlight "Results" in page title */
 .song-left {
   flex: 1;
   min-width: 0;
+  max-width: 300px;
 }
 /* End top song specific style */
 
+/* Begin listening time specific style */
+.total-listening-time-hours-days {
+  color: #a5a5a5;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.dot {
+  font-size: 18px;
+  line-height: 1;
+  color: #a5a5a5;
+}
+/* End listening time specific style */
+
 /* Begin top day specific style */
-.day-avatar {
+.day-avatar, .month-avatar {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -302,20 +308,111 @@ h1 { /* Highlight "Results" in page title */
 }
 /* End top day specific style */
 
-/* Begin listening time specific style */
-.total-listening-time-hours-days {
-  color: #a5a5a5;
-  font-size: 16px;
-  font-weight: 600;
+/* Begin monthly graph specific style */
+.monthly-graph {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 25px;
+  border-radius: 20px;
+  background: #1F1E1E;
+  box-shadow: 0 0 10px #65D56E;
+  max-width: none;
+  margin: 40px auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.dot {
-  font-size: 18px;
-  line-height: 1;
-  color: #a5a5a5;
+.graph-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-/* End listening time specific style */
+
+.graph-header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.graph-icon {
+  width: 36px;
+  height: 36px;
+  color: #65D56E;
+  margin-bottom: 0;
+  transform: translateY(-1.5px);
+}
+
+.graph-left {
+  width: 100%;
+}
+
+.sub {
+  color: #a5a5a5;
+  margin-bottom: 15px;
+}
+/* End monthly graph specific style */
+
+/* Begin top month specific style */
+.month-donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.month-donut {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: conic-gradient(
+    #65D56E 0 var(--percent),
+    #2d2d2d var(--percent) 100%
+  );
+  box-shadow: 0 0 14px rgba(101, 213, 110, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.month-donut-center {
+  position: absolute;
+  top: 51%;
+  left: 51%;
+  transform: translate(-50%, -50%);
+
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #1F1E1E;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.month-donut-center strong {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.month-donut-center span {
+  color: #a5a5a5;
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.month-donut-sub {
+  margin: 12px 0 0;
+  color: #a5a5a5;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+/* End top month specific style */
