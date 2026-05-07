@@ -91,7 +91,7 @@ def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
             for month, ms in month_totals.items()
         },
         "topMonth": {
-            "month": top_month[0],
+            "month": datetime.strptime(top_month[0], "%Y-%m").strftime("%b %Y"),
             "minutes": ms_to_min(top_month[1])
         }
     }
