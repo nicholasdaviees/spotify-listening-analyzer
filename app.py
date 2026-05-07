@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, render_template
 import json
+from analysis import calculateListeningStats
 
 app = Flask(__name__)
 
@@ -10,25 +11,23 @@ def index():
 @app.route("/upload", methods=["POST"])
 def upload_files():
     files = request.files.getlist("jsonFiles")
-    all_data = []
+    start_date = request.form.get("startDate") or None
+    end_date = request.form.get("endDate") or None
+    all_entries = []
 
     for file in files:
         try:
             data = json.load(file)
-            all_data.append({
-                "filename": file.filename,
-                "content": data
-            })
+            if isinstance(data, list):
+                all_entries.extend(data)
+            else:
+                print(f"{file.filename} is not a list")
+
         except Exception as e:
-            all_data.append({
-                "filename": file.filename,
-                "error": str(e)
-            })
+            print(f"Error reading {file.filename}: {e}")
 
-    for song in data:
-        print(f"Song: {song['trackName']} by {song['artistName']}")
-
-    return jsonify(all_data)
+    result = calculateListeningStats(all_entries, start_date=start_date, end_date=end_date)
+    return render_template("results.html", result=result)
 
 if __name__ == "__main__":
     app.run(debug=True)
