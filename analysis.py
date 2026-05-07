@@ -60,6 +60,7 @@ def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
     top_artist = max(artist_totals.items(), key=lambda x: x[1], default=(None, 0))
     top_song = max(song_total_ms.items(), key=lambda x: x[1], default=(None, 0))
     top_day = max(day_totals.items(), key=lambda x: x[1], default=(None, 0))
+    top_month = max(month_totals.items(), key=lambda x: x[1], default=(None, 0))
 
     result = {
         "topArtist": {
@@ -88,6 +89,10 @@ def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
         "monthlyListeningTime": {
             month: ms_to_min(ms)
             for month, ms in month_totals.items()
+        },
+        "topMonth": {
+            "month": top_month[0],
+            "minutes": ms_to_min(top_month[1])
         }
     }
 
