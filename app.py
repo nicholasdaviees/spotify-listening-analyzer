@@ -1,17 +1,21 @@
-import json, ollama, re
+import json
+import re
+
+import ollama
 from flask import Flask, request, render_template
 from datetime import datetime
+
 from analysis import (
     calculateListeningStats,
     compute_artist_percentage,
+    has_filter,
     run_analysis_query,
-    has_filter
 )
 from prompts import (
-    get_classification_prompt,
     get_artist_percentage_intent_prompt,
+    get_classification_prompt,
+    get_explanation_prompt,
     get_planner_prompt,
-    get_explanation_prompt
 )
 
 RAW_LISTENING_HISTORY = [] # Stores all uploaded listening history entries
@@ -153,43 +157,6 @@ def ask_llm():
             "answer": "I don't currently support finding least-listened artists."
         }
     # END REJECTION OF UNSUPPORTED QUESTIONS
-
-    # BEGIN CHECK FOR SIMPLE QUESTIONS
-    # Checks to see if question has already been computed in DASHBOARD_RESULT, so run_analysis_query() can be skipped
-    if "top artist" in question:
-        top = DASHBOARD_RESULT.get("topArtist", {})
-        if top.get("name"):
-            return {
-                "answer": f"Your top artist is {top['name']} with {round(top['minutes'], 2)} minutes."
-            }
-
-    if "top song" in question:
-        top = DASHBOARD_RESULT.get("topSongMin", {})
-        if top.get("name"):
-            return {
-                "answer": f"Your top song is {top['name']} with {round(top['minutes'], 2)} minutes."
-            }
-
-    if "total listening" in question or "total minutes" in question:
-        total = DASHBOARD_RESULT.get("totalListeningTime", {})
-        if total.get("minutes") is not None:
-            return {
-                "answer": f"You listened to {round(total['minutes'], 2)} minutes of music."
-            }
-        
-    if "top day" in question:
-        top = DASHBOARD_RESULT.get("topDay", {})
-        if top.get("full_date"):
-            return {
-                "answer": f"Your top day was {top['full_date']} with {round(top['minutes'], 2)} minutes."
-            }
-    if "top month" in question:
-        top = DASHBOARD_RESULT.get("topMonth", {})
-        if top.get("month"):
-            return {
-                "answer": f"Your top month was {top['month']} with {round(top['minutes'], 2)} minutes."
-            }
-    # END CHECK FOR SIMPLE QUESTIONS
     # ******************TODO: make this more dynamic? Returns false data******************
     
     # Convert user question into structured JSON for run_analysis_query()
