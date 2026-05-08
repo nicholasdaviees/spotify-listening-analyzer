@@ -1,6 +1,9 @@
 from flask import Flask, request, render_template
 import json
 from analysis import calculateListeningStats
+import ollama
+
+LISTENING_HISTORY = []
 
 app = Flask(__name__)
 
@@ -10,6 +13,7 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
+    global LISTENING_HISTORY
     files = request.files.getlist("jsonFiles")
     start_date = request.form.get("startDate") or None
     end_date = request.form.get("endDate") or None
@@ -26,6 +30,7 @@ def upload_files():
         except Exception as e:
             print(f"Error reading {file.filename}: {e}")
 
+    LISTENING_HISTORY = all_entries
     result = calculateListeningStats(all_entries, start_date=start_date, end_date=end_date)
     return render_template("results.html", result=result)
 
@@ -35,7 +40,32 @@ def llm_page():
 
 @app.route("/ask-llm", methods=["POST"])
 def ask_llm():
-    return {"answer": "test response"}
+    data = request.get_json()
+    question = data["question"]
+
+    history = LISTENING_HISTORY[:200]
+
+    prompt = f"""
+        You are a Spotify listening history analyst.
+
+        Answer the user's question using their listening data.
+        Be specific and mention artists, songs, and patterns.
+
+        User question:
+        {question}
+
+        Listening history:
+        {json.dumps(history)}
+    """
+
+    response = ollama.chat(
+        model="llama3.2",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return {"answer": response["message"]["content"]}
 
 if __name__ == "__main__":
     app.run(debug=True)
