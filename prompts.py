@@ -1,6 +1,6 @@
 import json
 
-def get_artist_percentage_intent_prompt(question):
+def get_artist_percentage_intent_prompt(question, conversation_context=""):
     return f"""
         Classify this Spotify listening-history question.
 
@@ -13,6 +13,18 @@ def get_artist_percentage_intent_prompt(question):
         If the user asks what percent, percentage, share, portion, or fraction of listening comes from one or more artists, use artist_percentage.
 
         For artist_percentage, extract artist names into an artists list.
+
+        Conversation context:
+        {conversation_context}
+
+        Use the conversation context to resolve references like:
+        - him
+        - her
+        - them
+        - that artist
+        - that song
+        - that date
+        - it
 
         Question:
         {question}
@@ -29,7 +41,7 @@ def get_artist_percentage_intent_prompt(question):
         {{"intent": "other"}}
     """
 
-def get_planner_prompt(question):
+def get_planner_prompt(question, conversation_context=""):
     return f"""
         You convert Spotify listening questions into JSON analysis plans.
 
@@ -55,6 +67,11 @@ def get_planner_prompt(question):
         - date
         - start_date
         - end_date
+
+        Conversation context:
+        {conversation_context}
+
+        Use the conversation context only to resolve follow-up references.
 
         Rules:
         - Return JSON only.

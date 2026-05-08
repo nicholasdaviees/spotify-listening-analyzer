@@ -19,8 +19,15 @@ from prompts import (
 
 RAW_LISTENING_HISTORY = [] # Stores all uploaded listening history entries
 DASHBOARD_RESULT = {} # Stores listening stats from results.html
+CHAT_HISTORY = []
 
 app = Flask(__name__)
+
+def return_with_memory(answer, original_question):
+    CHAT_HISTORY.append({"role": "user", "content": original_question})
+    CHAT_HISTORY.append({"role": "assistant", "content": answer})
+    CHAT_HISTORY[:] = CHAT_HISTORY[-10:]
+    return {"answer": answer}
 
 @app.route("/")
 def index():
@@ -56,16 +63,29 @@ def llm_page():
 
 @app.route("/ask-llm", methods=["POST"])
 def ask_llm():
+    global CHAT_HISTORY
     data = request.get_json()
     question = data["question"]
+    original_question = question
+
+    conversation_context = "\n".join(
+        f"{msg['role']}: {msg['content']}"
+        for msg in CHAT_HISTORY
+    )
 
     if not RAW_LISTENING_HISTORY:
-        return {"answer": "Please upload your Spotify listening history first."}
+        return return_with_memory(
+            "Please upload your Spotify listening history first.",
+            original_question
+        )
     
     question = question.lower()
 
     # BEGIN DEAL WITH PERCETAGE QUESTIONS
-    intent_prompt = get_artist_percentage_intent_prompt(question)
+    intent_prompt = get_artist_percentage_intent_prompt(
+        original_question,
+        conversation_context
+    )
 
     intent_response = ollama.chat(
         model="qwen2.5:14b",
@@ -87,7 +107,10 @@ def ask_llm():
         artists = intent_plan.get("artists", []) # Will pull any number of artist mentioned
 
         if not artists:
-            return {"answer": "Which artist do you want the percentage for?"}
+            return return_with_memory(
+                "Which artist do you want the percentage for?",
+                original_question
+            )
 
         results = []
         total_percent = 0
@@ -106,7 +129,10 @@ def ask_llm():
             # }
 
             if "error" in data:
-                return {"answer": data["error"]}
+                return return_with_memory(
+                    data["error"],
+                    original_question
+                )
 
             results.append(data)
             total_percent += data["percent"]
@@ -116,34 +142,41 @@ def ask_llm():
         # For only single artist request
         if len(results) == 1:
             singleArtist = results[0]
-            return {
-                "answer": f"{singleArtist['artist']} accounts for {singleArtist['percent']}% of your total listening time."
-            }
+            return return_with_memory(
+                f"{singleArtist['artist']} accounts for {singleArtist['percent']}% of your total listening time.",
+                original_question
+            )
 
         # For multiple artist request
         multipleArtists = ", ".join(data["artist"] for data in results)
 
-        return {
-            "answer": f"{multipleArtists} together account for {round(total_percent, 2)}% of your total listening time, with {round(total_minutes, 2)} minutes combined."
-        }
+        return return_with_memory(
+            f"{multipleArtists} together account for {round(total_percent, 2)}% of your total listening time, with {round(total_minutes, 2)} minutes combined.",
+            original_question
+        )
     # END DEAL WITH PERCENTAGE QUESTIONS
     
     # ******************TODO: make this more dynamic? Returns false data******************
     # BEGIN REJECTION OF UNSUPPORTED QUESTIONS
     if any(term in question for term in ["genre", "rap", "hip hop", "pop", "rock"]):
-        return {
-            "answer": "I don't have genre information in your listening history."
-        }
+        return return_with_memory(
+            "I don't have genre information in your listening history.",
+            original_question
+        )
     
     if "least" in question:
-        return {
-            "answer": "I don't currently support finding least-listened artists."
-        }
+        return return_with_memory(
+            "I don't currently support finding least-listened artists.",
+            original_question
+        )
     # END REJECTION OF UNSUPPORTED QUESTIONS
     # ******************TODO: make this more dynamic? Returns false data******************
     
     # Convert user question into structured JSON for run_analysis_query()
-    planner_prompt = get_planner_prompt(question)
+    planner_prompt = get_planner_prompt(
+        original_question,
+        conversation_context
+    )
 
     # Call LLM to get analysis plan
     planner_response = ollama.chat(
@@ -202,8 +235,10 @@ def ask_llm():
                     filters["start_date"], filters["end_date"] = end_date, start_date
 
     except Exception:
-        return {"answer": "I could not understand that question as an analysis plan. Try rephrasing it."}
-
+        return return_with_memory(
+            "I could not understand that question as an analysis plan. Try rephrasing it.",
+            original_question
+        )
     # TODO: fix to include more than one question in multi_aggregation
     if plan.get("type") == "multi_aggregation":
         queries = plan.get("queries", [])
@@ -227,7 +262,8 @@ def ask_llm():
         messages=[{"role": "user", "content": explanation_prompt}]
     )
 
-    return {"answer": explanation_response["message"]["content"]}
+    answer = explanation_response["message"]["content"]
+    return return_with_memory(answer, original_question)
 
 if __name__ == "__main__":
     app.run(debug=True)
