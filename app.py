@@ -13,7 +13,6 @@ from analysis import (
 )
 from prompts import (
     get_artist_percentage_intent_prompt,
-    get_classification_prompt,
     get_explanation_prompt,
     get_planner_prompt,
 )
@@ -62,22 +61,6 @@ def ask_llm():
 
     if not RAW_LISTENING_HISTORY:
         return {"answer": "Please upload your Spotify listening history first."}
-    
-    # BEGIN DETERMINE IF QUESTION IS MEANINGFUL
-    classification_prompt = get_classification_prompt(question)
-
-    classification = ollama.chat(
-        model="qwen2.5:14b",
-        messages=[{"role": "user", "content": classification_prompt}]
-    )
-
-    decision = classification["message"]["content"].strip().lower()
-
-    if "no" in decision:
-        return {
-            "answer": "I couldn't understand that question. Please ask something about your listening history."
-        }
-    # END DETERMINE IF QUESTION IS MEANINGFUL
     
     question = question.lower()
 

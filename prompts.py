@@ -1,15 +1,5 @@
 import json
 
-def get_classification_prompt(question):
-    return f"""
-        Is the following question a meaningful question about Spotify listening history?
-
-        Answer ONLY "yes" or "no".
-
-        Question:
-        {question}
-    """
-
 def get_artist_percentage_intent_prompt(question):
     return f"""
         Classify this Spotify listening-history question.
@@ -75,6 +65,7 @@ def get_planner_prompt(question):
         - Use actual JSON null, not the string "null".
         - Use null for unknown or unused filters.
         - limit should usually be 10.
+        - If the user asks to "list all", "show all", or "everything", override limit and set it to 100.
         - Include filter keys with null when they are unused.
         - Only create plans for questions supported by the available group_by, metric, and filters.
         - If the user gives a specific date like 8/2/2025, July 10 2025, 2025-08-02, or "August 8th", put it in filters.date as YYYY-MM-DD.
