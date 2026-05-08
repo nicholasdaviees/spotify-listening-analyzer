@@ -181,11 +181,6 @@ def ask_llm():
     
     # ******************TODO: make this more dynamic? Returns false data******************
     # BEGIN REJECTION OF UNSUPPORTED QUESTIONS
-    if any(term in question for term in ["genre", "rap", "hip hop", "pop", "rock"]):
-        return return_with_memory(
-            "I don't have genre information in your listening history.",
-            original_question
-        )
     
     if "least" in question:
         return return_with_memory(
@@ -214,6 +209,12 @@ def ask_llm():
     # Ensure correct JSON parsing
     try:
         plan = json.loads(raw_plan)
+
+        if plan.get("unsupported"):
+            return return_with_memory(
+                f"I can't answer that because {plan.get('reason', 'that information is not available in your listening history')}.",
+                original_question
+            )
 
         question = question.lower()
 
@@ -276,11 +277,7 @@ def ask_llm():
         analysis_result = {}
 
         for index, query in enumerate(queries, start=1):
-            analysis_result[f"query_{index}"] = run_analysis_query(
-                DASHBOARD_RESULT,
-                RAW_LISTENING_HISTORY,
-                query
-            )
+            analysis_result[f"query_{index}"] = run_analysis_query(DASHBOARD_RESULT, RAW_LISTENING_HISTORY, query)
 
     # For single query
     else:

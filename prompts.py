@@ -53,6 +53,8 @@ def get_clarity_prompt(question):
 
         Return ONLY "yes" or "no".
 
+        Say "yes" if the question asks about Spotify listening history, even if the data may not be available.
+
         Say "yes" if the question asks about:
         - top artists or songs
         - listening time (minutes or hours)
@@ -61,6 +63,7 @@ def get_clarity_prompt(question):
         - a specific song
         - a specific date or date range
         - follow-up questions using words like "him", "that artist", "that song", "then"
+        - genres, moods, albums, playlists, or other Spotify metadata
 
         Say "no" only if the question is:
         - random text
@@ -124,6 +127,7 @@ def get_planner_prompt(question, conversation_context=""):
         - If the question contains "between", "from", or a date range using "and" or "-", NEVER use filters.date. Use filters.start_date and filters.end_date in YYYY-MM-DD format.
         - If the user asks for more than one grouped result, use type: "multi_aggregation".
         - If the user asks for a total over a date range AND a top artist/song/day in that same range, use type: "multi_aggregation" and apply the same start_date/end_date filters to every query.
+        - If the question requires data that is not available (e.g., genre, mood, lyrics, album), return: {{"unsupported": true, "reason": "brief reason"}}
 
         Examples:
 
@@ -291,6 +295,18 @@ def get_planner_prompt(question, conversation_context=""):
             "start_date": null,
             "end_date": null
         }}
+        }}
+
+        Question: What percentage of my listening was hip hop music?
+        {{
+        "unsupported": true,
+        "reason": "genre information is not available"
+        }}
+
+        Question: What genre do I listen to most?
+        {{
+        "unsupported": true,
+        "reason": "genre information is not available"
         }}
 
         User question:
