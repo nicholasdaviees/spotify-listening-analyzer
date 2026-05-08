@@ -355,9 +355,11 @@ def get_explanation_prompt(question, analysis_result):
         - Do not say "I ran a query" or mention an "analysis plan".
         - Do not output JSON.
         - Keep the answer under 10 sentences.
-        - If the result is empty, explain briefly why the question could not be understood, and suggest 2-3 better ways to ask it, giving concrete example questions.
+        - If the result is empty, say: "I couldn't find any listening history matching that question."
         - If the question asks for total listening time, use total_minutes as the main answer.
         - If the result contains multiple queries, answer each part clearly.
+        - If multiple query results are provided, keep each query's totals separate.
+        - Do not describe total_minutes as applying to a subgroup unless it came from that subgroup's query result.
         - Only answer the current question.
         - Do not assume context from previous questions.
         - Do not mention filters unless necessary.

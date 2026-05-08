@@ -268,17 +268,19 @@ def ask_llm():
 
         answer = clarification_response["message"]["content"]
         return return_with_memory(answer, original_question)
-    # TODO: fix to include more than one question in multi_aggregation
+    
+    # For multiple queries
     if plan.get("type") == "multi_aggregation":
         queries = plan.get("queries", [])
 
         analysis_result = {}
 
-        if len(queries) > 0:
-            analysis_result["query_1"] = run_analysis_query(DASHBOARD_RESULT, RAW_LISTENING_HISTORY, queries[0])
-
-        if len(queries) > 1:
-            analysis_result["query_2"] = run_analysis_query(DASHBOARD_RESULT, RAW_LISTENING_HISTORY, queries[1])
+        for index, query in enumerate(queries, start=1):
+            analysis_result[f"query_{index}"] = run_analysis_query(
+                DASHBOARD_RESULT,
+                RAW_LISTENING_HISTORY,
+                query
+            )
 
     # For single query
     else:
