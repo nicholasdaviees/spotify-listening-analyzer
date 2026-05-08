@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, session
+from flask import Flask, request, render_template
 import json
 from analysis import calculateListeningStats
 
@@ -32,6 +32,10 @@ def upload_files():
 @app.route("/llm")
 def llm_page():
     return render_template("llm.html")
+
+@app.route("/ask-llm", methods=["POST"])
+def ask_llm():
+    return {"answer": "test response"}
 
 if __name__ == "__main__":
     app.run(debug=True)
