@@ -13,7 +13,9 @@ from analysis import (
 )
 from prompts import (
     get_artist_percentage_intent_prompt,
+    get_clarification_prompt,
     get_explanation_prompt,
+    get_clarity_prompt,
     get_planner_prompt,
 )
 
@@ -78,6 +80,27 @@ def ask_llm():
             "Please upload your Spotify listening history first.",
             original_question
         )
+    
+    clarity_prompt = get_clarity_prompt(original_question)
+
+    clarity_response = ollama.chat(
+        model="qwen2.5:14b",
+        messages=[{"role": "user", "content": clarity_prompt}],
+        options={"temperature": 0}
+    )
+
+    decision = clarity_response["message"]["content"].strip().lower()
+
+    if "no" in decision:
+        clarification_prompt = get_clarification_prompt(original_question)
+
+        clarification_response = ollama.chat(
+            model="qwen2.5:14b",
+            messages=[{"role": "user", "content": clarification_prompt}]
+        )
+
+        answer = clarification_response["message"]["content"]
+        return return_with_memory(answer, original_question)
     
     question = question.lower()
 
@@ -235,10 +258,16 @@ def ask_llm():
                     filters["start_date"], filters["end_date"] = end_date, start_date
 
     except Exception:
-        return return_with_memory(
-            "I could not understand that question as an analysis plan. Try rephrasing it.",
-            original_question
+        # Allow LLM to suggest a better question for user
+        clarification_prompt = get_clarification_prompt(original_question)
+
+        clarification_response = ollama.chat(
+            model="qwen2.5:14b",
+            messages=[{"role": "user", "content": clarification_prompt}]
         )
+
+        answer = clarification_response["message"]["content"]
+        return return_with_memory(answer, original_question)
     # TODO: fix to include more than one question in multi_aggregation
     if plan.get("type") == "multi_aggregation":
         queries = plan.get("queries", [])

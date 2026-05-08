@@ -10,9 +10,12 @@ def get_artist_percentage_intent_prompt(question, conversation_context=""):
         - artist_percentage
         - other
 
-        If the user asks what percent, percentage, share, portion, or fraction of listening comes from one or more artists, use artist_percentage.
-
-        For artist_percentage, extract artist names into an artists list.
+        Rules:
+        - Only use artist_percentage if the CURRENT question asks for percent, percentage, share, portion, or fraction of listening from one or more artists.
+        - Do NOT use artist_percentage just because the conversation context contains a previous percentage answer.
+        - If the CURRENT question asks about hours, minutes, plays, top song, top track, "that song", or listening time for a song, return {{"intent": "other"}}.
+        - For artist_percentage, extract artist names into an artists list.
+        - Use the conversation context only to resolve references like him, her, them, that artist, or it.
 
         Conversation context:
         {conversation_context}
@@ -25,6 +28,9 @@ def get_artist_percentage_intent_prompt(question, conversation_context=""):
         - that song
         - that date
         - it
+        - then
+        - that period
+        - same time
 
         Question:
         {question}
@@ -39,6 +45,33 @@ def get_artist_percentage_intent_prompt(question, conversation_context=""):
 
         Question: What are my top songs?
         {{"intent": "other"}}
+    """
+
+def get_clarity_prompt(question):
+    return f"""
+        Is this a meaningful Spotify listening-history question?
+
+        Return ONLY "yes" or "no".
+
+        Say "yes" if the question asks about:
+        - top artists or songs
+        - listening time (minutes or hours)
+        - plays
+        - a specific artist
+        - a specific song
+        - a specific date or date range
+        - follow-up questions using words like "him", "that artist", "that song", "then"
+
+        Say "no" only if the question is:
+        - random text
+        - unrelated to Spotify listening history
+        - too vague to answer even with context
+
+        Important:
+        - Follow-up questions like "what was my top song from him?" are VALID and should return "yes".
+
+        Question:
+        {question}
     """
 
 def get_planner_prompt(question, conversation_context=""):
@@ -264,6 +297,45 @@ def get_planner_prompt(question, conversation_context=""):
         {question}
     """
 
+def get_clarification_prompt(question):
+    return f"""
+        You are helping a user ask better questions about their Spotify listening history.
+
+        The user asked:
+        {question}
+
+        Explain briefly why the question is unclear in a friendly, conversational way, and suggest 2-3 better questions the user can ask.
+
+        You MUST only suggest questions that this system can answer, such as:
+        - top artists or songs
+        - listening time (minutes or hours)
+        - listening on a specific date
+        - listening between dates
+        - listening by a specific artist
+
+        Rules:
+        - Be friendly and conversational.
+        - Do NOT sound critical or formal.
+        - Do NOT mention JSON, code, or analysis plans.
+        - Do NOT suggest generic or meta questions (like "what can you do").
+        - Give concrete, specific example questions.
+        - Keep it under 3 sentences.
+
+        Example style:
+        "I'm not sure what you're looking for. Try asking something like:
+        - 'Who are my top artists?'
+        - 'How many minutes did I listen to music?'"
+
+        Examples of GOOD suggestions:
+        - "Who are my top artists?"
+        - "How many minutes did I listen to Ed Sheeran?"
+        - "What songs did I listen to on 5/26/2025?"
+
+        Examples of BAD suggestions:
+        - "What can you help me with?"
+        - "Tell me about my data"
+    """
+
 def get_explanation_prompt(question, analysis_result):
     return f"""
         You are a Spotify listening history analyst.
@@ -283,7 +355,7 @@ def get_explanation_prompt(question, analysis_result):
         - Do not say "I ran a query" or mention an "analysis plan".
         - Do not output JSON.
         - Keep the answer under 10 sentences.
-        - If the result is empty, say: "I couldn't find any listening history matching that question."
+        - If the result is empty, explain briefly why the question could not be understood, and suggest 2-3 better ways to ask it, giving concrete example questions.
         - If the question asks for total listening time, use total_minutes as the main answer.
         - If the result contains multiple queries, answer each part clearly.
         - Only answer the current question.
