@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, session
 import json
 from analysis import calculateListeningStats
 
@@ -28,6 +28,10 @@ def upload_files():
 
     result = calculateListeningStats(all_entries, start_date=start_date, end_date=end_date)
     return render_template("results.html", result=result)
+
+@app.route("/llm")
+def llm_page():
+    return render_template("llm.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

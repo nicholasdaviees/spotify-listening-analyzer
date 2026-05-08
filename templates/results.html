@@ -264,56 +264,59 @@
             <!-- END BOTTOM ROW STATS -->
         </div>
         <!-- TODO: Add button to go to LLM chatbot -->
-    </div>    
- </div>   
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const monthlyData = JSON.parse('{{ result.monthlyListeningTime | tojson | safe }}');
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const values = months.map((m, i) => {
-    const key = Object.keys(monthlyData).find(k => k.includes((i+1).toString().padStart(2,'0')));
-    return key ? monthlyData[key] : 0;
-    });
+    </div>
+    <a href="{{ url_for('llm_page') }}" class="llm-button">
+        Use LLM
+    </a>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const monthlyData = JSON.parse('{{ result.monthlyListeningTime | tojson | safe }}');
+        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+        const values = months.map((m, i) => {
+        const key = Object.keys(monthlyData).find(k => k.includes((i+1).toString().padStart(2,'0')));
+        return key ? monthlyData[key] : 0;
+        });
 
-    // Bar chart
-    new Chart(document.getElementById('monthlyGraph'), {
-        type: 'bar',
-        data: {
-            labels: months,
-            datasets: [{
-                data: values,
-                backgroundColor: '#65D56E',
-                borderRadius: 0,
-                barPercentage: 0.6
-            }]
-        },
-        options: {
-            plugins: {
-                legend: { display: false }
+        // Bar chart
+        new Chart(document.getElementById('monthlyGraph'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    data: values,
+                    backgroundColor: '#65D56E',
+                    borderRadius: 0,
+                    barPercentage: 0.6
+                }]
             },
-
-            scales: {
-                x: {
-                    ticks: { 
-                        color: '#ccc', 
-                        autoSkip: false
-                    },
-                    grid: { 
-                        display: false 
-                    }
+            options: {
+                plugins: {
+                    legend: { display: false }
                 },
-                y: {
-                    ticks: { 
-                        color: '#aaa' 
+
+                scales: {
+                    x: {
+                        ticks: { 
+                            color: '#ccc', 
+                            autoSkip: false
+                        },
+                        grid: { 
+                            display: false 
+                        }
                     },
-                    grid: {
-                        color: 'rgba(255,255,255,0.1)',
-                        borderDash: [5,5]
+                    y: {
+                        ticks: { 
+                            color: '#aaa' 
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)',
+                            borderDash: [5,5]
+                        }
                     }
                 }
             }
-        }
-    });
-</script>
+        });
+    </script>
 </body>
 </html>

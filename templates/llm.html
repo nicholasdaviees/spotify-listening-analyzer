@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spotify LLM Chat</title>
+</head>
+<body>
+    <h1>Ask About Your Listening History</h1>
+
+    <div id="chat-box"></div>
+
+    <input 
+        type="text" 
+        id="user-question" 
+        placeholder="Ask something like: What artist did I binge the most?"
+    >
+
+    <button onclick="sendQuestion()">Send</button>
+
+    <script>
+        async function sendQuestion() {
+            const input = document.getElementById("user-question");
+            const question = input.value;
+
+            const response = await fetch("/ask-llm", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ question })
+            });
+
+            const data = await response.json();
+
+            document.getElementById("chat-box").innerHTML += `
+                <p><strong>You:</strong> ${question}</p>
+                <p><strong>LLM:</strong> ${data.answer}</p>
+            `;
+
+            input.value = "";
+        }
+    </script>
+</body>
+</html>
