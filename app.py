@@ -179,17 +179,6 @@ def ask_llm():
         )
     # END DEAL WITH PERCENTAGE QUESTIONS
     
-    # ******************TODO: make this more dynamic? Returns false data******************
-    # BEGIN REJECTION OF UNSUPPORTED QUESTIONS
-    
-    if "least" in question:
-        return return_with_memory(
-            "I don't currently support finding least-listened artists.",
-            original_question
-        )
-    # END REJECTION OF UNSUPPORTED QUESTIONS
-    # ******************TODO: make this more dynamic? Returns false data******************
-    
     # Convert user question into structured JSON for run_analysis_query()
     planner_prompt = get_planner_prompt(
         original_question,

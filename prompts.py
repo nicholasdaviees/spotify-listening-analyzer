@@ -91,6 +91,10 @@ def get_planner_prompt(question, conversation_context=""):
         - year
         - date
 
+        Available sort values:
+        - desc
+        - asc
+
         Available metric values:
         - minutes
         - plays
@@ -128,6 +132,9 @@ def get_planner_prompt(question, conversation_context=""):
         - If the user asks for more than one grouped result, use type: "multi_aggregation".
         - If the user asks for a total over a date range AND a top artist/song/day in that same range, use type: "multi_aggregation" and apply the same start_date/end_date filters to every query.
         - If the question requires data that is not available (e.g., genre, mood, lyrics, album), return: {{"unsupported": true, "reason": "brief reason"}}
+        - Use sort: "desc" for "top", "most", "highest", or "longest".
+        - Use sort: "asc" for "least", "lowest", "shortest", or "smallest".
+        - If sort is unknown, use "desc".
 
         Examples:
 
@@ -288,6 +295,40 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 7,
         "filters": {{
             "artist": "Ed Sheeran",
+            "year": null,
+            "month": null,
+            "weekday": null,
+            "date": null,
+            "start_date": null,
+            "end_date": null
+        }}
+        }}
+
+        Question: Who was my least listened artist?
+        {{
+        "group_by": "artist",
+        "metric": "minutes",
+        "sort": "asc",
+        "limit": 10,
+        "filters": {{
+            "artist": null,
+            "year": null,
+            "month": null,
+            "weekday": null,
+            "date": null,
+            "start_date": null,
+            "end_date": null
+        }}
+        }}
+
+        Question: What was my least listened song?
+        {{
+        "group_by": "track",
+        "metric": "minutes",
+        "sort": "asc",
+        "limit": 10,
+        "filters": {{
+            "artist": null,
             "year": null,
             "month": null,
             "weekday": null,

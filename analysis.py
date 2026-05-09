@@ -75,12 +75,17 @@ def run_analysis_query(dashboard_result, raw_listening_history, plan):
     metric = plan.get("metric", "minutes")
     limit = plan.get("limit", 10)
     filters = plan.get("filters", {})
+    sort_order = plan.get("sort", "desc")
 
     results = {}
 
     # BEGIN FOR LOOP PROCESSING LISTENING HISTORY
     for entry in raw_listening_history:
         artist, track, ms, dt = parse_entry(entry) # Example: ["Drake", "God's Plan", 210000, datetime(2025, 7, 12, 14, 30)]
+
+        # Removes 0ms plays from all analysis
+        if ms <= 0:
+            continue
 
         # Error handling
         if not artist and group_by == "artist":
@@ -184,10 +189,12 @@ def run_analysis_query(dashboard_result, raw_listening_history, plan):
             "minutes": round(ms_to_min(value["ms"]), 2)
         })
 
+    reverse_sort = sort_order != "asc"
+
     if metric == "plays":
-        output.sort(key=lambda x: x["plays"], reverse=True)
+        output.sort(key=lambda x: x["plays"], reverse=reverse_sort)
     else:
-        output.sort(key=lambda x: x["minutes"], reverse=True)
+        output.sort(key=lambda x: x["minutes"], reverse=reverse_sort)
 
     total_minutes = round(ms_to_min(sum(value["ms"] for value in results.values())), 2)
 
