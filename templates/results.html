@@ -264,10 +264,16 @@
             <!-- END BOTTOM ROW STATS -->
         </div>
         <!-- TODO: Add button to go to LLM chatbot -->
+        <div class="llm-button-wrap">
+            <a href="{{ url_for('llm_page') }}" class="llm-button">
+                <span>Ask AI About Your Music</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="M13 6l6 6-6 6"></path>
+                </svg>
+            </a>
+        </div>
     </div>
-    <a href="{{ url_for('llm_page') }}" class="llm-button">
-        Use LLM
-    </a>
 </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
