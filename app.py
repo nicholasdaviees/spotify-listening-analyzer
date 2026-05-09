@@ -5,13 +5,13 @@ import ollama
 from flask import Flask, request, render_template
 from datetime import datetime
 
-from analysis import (
+from services.analysis import (
     calculateListeningStats,
     compute_artist_percentage,
     has_filter,
     run_analysis_query,
 )
-from prompts import (
+from services.prompts import (
     get_artist_percentage_intent_prompt,
     get_clarification_prompt,
     get_explanation_prompt,

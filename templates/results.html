@@ -274,8 +274,14 @@
         const monthlyData = JSON.parse('{{ result.monthlyListeningTime | tojson | safe }}');
         const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
         const values = months.map((m, i) => {
-        const key = Object.keys(monthlyData).find(k => k.includes((i+1).toString().padStart(2,'0')));
-        return key ? monthlyData[key] : 0;
+            const monthNum = String(i + 1).padStart(2, "0");
+
+            const key = Object.keys(monthlyData).find(k => {
+                const parts = k.split("-");
+                return parts.length >= 2 && parts[1] === monthNum;
+            });
+
+            return key ? monthlyData[key] : 0;
         });
 
         // Bar chart
