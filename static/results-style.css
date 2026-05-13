@@ -94,6 +94,7 @@ body {
 
 .new-analysis-btn:hover {
   box-shadow: 0 0px 18px #65D56E;
+  transform: scale(1.02);
 }
 
 .new-analysis-btn:active {
@@ -183,6 +184,16 @@ h1 { /* Highlight "Results" in page title */
   color: #fff;
   background: #1F1E1E;
   box-shadow: 0 0px 10px #65D56E;
+  transition: all 0.3s ease;
+}
+
+.artist-card:hover, .song-card:hover, .total-listening-time-card:hover, .day-card:hover, .month-card:hover {
+    box-shadow: 0 0 18px #65D56E;
+    transform: scale(1.02);
+}
+
+.artist-card:active, .song-card:active, .total-listening-time-card:active, .day-card:active, .month-card:active {
+  transform: scale(0.97);
 }
 
 .artist-content, .song-content, .total-listening-time-content, .day-content {
@@ -333,6 +344,16 @@ h1 { /* Highlight "Results" in page title */
   margin: 0;
   width: 100%;
   box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.monthly-graph:hover {
+    box-shadow: 0 0 18px #65D56E;
+    transform: scale(1.02);
+}
+
+.monthly-graph:active {
+  transform: scale(0.97);
 }
 
 .graph-header {
@@ -447,7 +468,7 @@ h1 { /* Highlight "Results" in page title */
   background: #65D56E;
   color: #000000;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
   line-height: 1;
   cursor: pointer;
@@ -459,6 +480,7 @@ h1 { /* Highlight "Results" in page title */
 
 .llm-button:hover {
   box-shadow: 0 0px 18px #65D56E;
+  transform: scale(1.02);
 }
 
 .llm-button:active {

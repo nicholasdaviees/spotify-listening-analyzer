@@ -1,0 +1,111 @@
+body {
+  background-image: url("images/background-image.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Page title */
+.page-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px 20px 10px;
+}
+
+h1 {
+  font-size: 54px;
+  color: white;
+  margin: 0;
+}
+
+.highlight {
+  color: #65d56e;
+}
+
+/* Main chatbot area */
+.chat-box-container {
+  width: 100%;
+  max-width: 1800px;
+  margin: 40px auto 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* LLM output box */
+.chat-box {
+  width: 85%;
+  min-height: 150px;
+  max-height: 420px;
+  overflow-y: auto;
+
+  background: #1e1e1e;
+  box-shadow: 0 0px 10px #65D56E;
+  border-radius: 40px;
+
+  padding: 35px 45px;
+  box-sizing: border-box;
+
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+/* User input */
+.question-input {
+  width: 85%;
+  margin-top: 35px;
+
+  padding: 20px 28px;
+  box-sizing: border-box;
+
+  background: #1e1e1e;
+  color: #e0e0e0;
+
+  border: none;
+  outline: none;
+  border-radius: 35px;
+
+  font-size: 22px;
+}
+
+.question-input::placeholder {
+  color: #9c9c9c;
+}
+
+/* Send button */
+.question-input-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 30px;
+  border-radius: 999px;
+  gap: 8px;
+
+  height: 25px;
+  background: #65D56E;
+  color: #000000;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+
+  border: none;
+  box-shadow: 0 0px 10px #65D56E;
+  transition: all 0.3s ease;
+}
+
+.question-input-button:hover {
+  box-shadow: 0 0px 18px #65D56E;
+  transform: scale(1.02);
+}
+
+.question-input-button:active {
+  transform: scale(0.97);
+}
