@@ -7,23 +7,41 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='llm-style.css') }}">
 </head>
 <body>
-    <div class="page-title">
-        <h1><span class="highlight">Ask AI</span> About Your Listening History</h1>
+    <div class="content-wrap">
+        <div class="page-header">
+            <div class="website-title">
+            <a href="/" class="logo-link">
+                    <img src="{{ url_for('static', filename='images/spotify-icon.png') }}" class="spotify-icon">
+                    <h2>Spotify Listening <span class="highlight">Analyzer</span></h2>
+                </a>
+            </div>
+
+            <a href="/" class="new-analysis-btn">
+                <svg class="plus-icon" viewBox="7 7 10 10" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 7.5v9"></path>
+                    <path d="M7.5 12h9"></path>
+                </svg>
+                <span>New Analysis</span>
+            </a>
+        </div>
+
+        <div class="page-title">
+            <h1><span class="highlight">Ask AI</span> About Your Listening History</h1>
+        </div>
+
+        <div class="chat-box-container">
+            <div id="chat-box" class="chat-box"></div>
+
+            <input 
+                type="text"
+                id="user-question"
+                class="question-input"
+                placeholder="Ask something like: What artist did I binge the most?"
+            >   
+
+            <button class="question-input-button" onclick="sendQuestion()">Send</button>
+        </div>
     </div>
-
-    <div class="chat-box-container">
-        <div id="chat-box" class="chat-box"></div>
-
-        <input 
-            type="text"
-            id="user-question"
-            class="question-input"
-            placeholder="Ask something like: What artist did I binge the most?"
-        >   
-
-        <button class="question-input-button" onclick="sendQuestion()">Send</button>
-    </div> 
-
     <script>
         async function sendQuestion() {
             const input = document.getElementById("user-question");

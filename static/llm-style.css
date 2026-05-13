@@ -8,24 +8,105 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* Page title */
-.page-title {
+/* Begin header style */
+.page-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  text-align: center;
-  padding: 30px 20px 10px;
+  margin-top: 1.85%;
+  margin-bottom: 2.8%;
+  margin-left: 7%;
+  width: 100%;
 }
 
-h1 {
+.spotify-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.website-title {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 10px;
+}
+
+.website-title h2 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.highlight {
+  color: #65D56E;
+  margin-left: 7px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  margin: 0px;
+}
+
+h1 { /* Highlight "Ask AI" in page title */
   font-size: 54px;
   color: white;
   margin: 0;
 }
 
-.highlight {
-  color: #65d56e;
+.plus-icon {
+  width: 20px;
+  height: 20px;
+  color: #65D56E;
+  flex-shrink: 0;
+  display: block;
+  transform: translateY(-1.5px);
 }
+
+.new-analysis-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  height: 25px;
+  padding: 8px 22px;
+  margin-right: 14%;
+  border-radius: 999px;
+
+  background: #1F1E1E;
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+
+  border: none;
+  box-shadow: 0 0px 10px #65D56E;
+  transition: all 0.3s ease;
+}
+
+.new-analysis-btn:hover {
+  box-shadow: 0 0px 18px #65D56E;
+  transform: scale(1.02);
+}
+
+.new-analysis-btn:active {
+  transform: scale(0.97);
+}
+/* End header style */
 
 /* Main chatbot area */
 .chat-box-container {
