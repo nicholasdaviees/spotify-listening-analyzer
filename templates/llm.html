@@ -70,8 +70,8 @@
             const question = input.value;
 
             document.getElementById("chat-box").innerHTML += `
-                <div style="text-align: right; margin-bottom: 10px;">
-                    <p><strong>You:</strong> ${question}</p>
+                <div class="message user" style="text-align: right; margin-bottom: 10px;">
+                    <div class="bubble">${question}</div>
                 </div>
             `;
 
@@ -90,8 +90,8 @@
             const data = await response.json();
 
             document.getElementById("chat-box").innerHTML += `
-                <div style="text-align: left; margin-bottom: 10px;">
-                    <p><strong>LLM:</strong> ${data.answer}</p>
+                <div class="message llm" style="text-align: left; margin-bottom: 10px;">
+                    <div class="bubble">${data.answer}</div>
                 </div>
             `;
 

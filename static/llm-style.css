@@ -128,7 +128,7 @@ h1 { /* Highlight "Ask AI" in page title */
 .chat-box {
   width: 100%;
   min-height: 150px;
-  max-height: 420px;
+  max-height: 600px;
   overflow-y: auto;
 
   background: #1e1e1e;
@@ -154,7 +154,7 @@ h1 { /* Highlight "Ask AI" in page title */
   min-height: 60px;
   max-height: 150px;
   margin-top: 35px;
-  padding: 20px 120px 14px 35px;
+  padding: 22px 120px 14px 35px;
   box-sizing: border-box;
   background: #1e1e1e;
   color: #e0e0e0;
@@ -164,6 +164,13 @@ h1 { /* Highlight "Ask AI" in page title */
   font-size: 18px;
   resize: none;
   overflow-y: auto;
+  outline: none;
+  transition: all 0.5s ease;
+}
+
+.question-input:hover {
+  box-shadow: 0 0 8px #65D56E;
+  transform: scale(1.003);
 }
 
 .question-input::placeholder {
@@ -202,3 +209,39 @@ h1 { /* Highlight "Ask AI" in page title */
     transform: translateY(2px);
 }
 /* End user input style */
+
+
+
+.message {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.llm {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 65%;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: 18px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message.user .bubble {
+  background: #65D56E;
+  color: black;
+  border-bottom-right-radius: 6px; /* little tail effect */
+}
+
+.message.llm .bubble {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-bottom-left-radius: 6px;
+}

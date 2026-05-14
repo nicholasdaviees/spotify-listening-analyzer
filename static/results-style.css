@@ -347,8 +347,8 @@ h1 { /* Highlight "Results" in page title */
 }
 
 .monthly-graph:hover {
-    box-shadow: 0 0 18px #65D56E;
-    transform: scale(1.02);
+  box-shadow: 0 0 18px #65D56E;
+  transform: scale(1.02);
 }
 
 .monthly-graph:active {

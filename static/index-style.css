@@ -119,14 +119,14 @@ h1 {
 }
 
 .date-group input {
-    background: #1e1e1e;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    padding: 10px 12px;
-    color: white;
-    font-size: 14px;
-    outline: none;
-    transition: 0.2s ease;
+  background: #1e1e1e;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s ease;
 }
 
 .date-group input:hover {
