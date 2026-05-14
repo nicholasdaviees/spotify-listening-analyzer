@@ -15,7 +15,7 @@
             <div class="website-title">
             <a href="/" class="logo-link">
                     <img src="{{ url_for('static', filename='images/spotify-icon.png') }}" class="spotify-icon">
-                    <h2>Spotify Listening <span class="highlight">Analyzer</span></h2>
+                    <h2>Spotify Listening&nbsp;<span class="highlight">Analyzer</span></h2>
                 </a>
             </div>
 
@@ -26,7 +26,6 @@
                 </svg>
                 <span>New Analysis</span>
             </a>
-
         </div>
 
         <div class="page-title">
@@ -60,7 +59,7 @@
                     <div class="artist-avatar-wrap">
                         <div class="artist-avatar">
                             <!-- FIX -->
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"/>
+                            <img src="{{ result.topArtist.image_url or url_for('static', filename='images/default-artist.png') }}">
                             <!-- FIX -->
                         </div>   
                     </div>
@@ -84,7 +83,7 @@
                     <div class="song-avatar-wrap">
                         <div class="song-avatar">
                             <!-- FIX -->
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"/>
+                            <img src="{{ result.topSongMin.image_url or url_for('static', filename='images/default-song.png') }}">
                             <!-- FIX -->
                         </div>
                     </div>
@@ -97,7 +96,7 @@
                             <circle cx="12" cy="12" r="9"></circle>
                             <path d="M12 7v6l4 2"></path>
                         </svg>
-                        <span>{{ "%.2f"|format(result.topSongMin.minutes) }} minutes</span>
+                        <span>{{ "{:,.0f}".format(result.topSongMin.minutes) }} minutes</span>
                     </div>
                     <div class="plays-pill">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -127,7 +126,6 @@
                             <img src="{{ url_for('static', filename='images/total_listening_time_card_image.png') }}" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="pills">
@@ -153,7 +151,6 @@
                         <span>{{ "{:.1f}".format(result.totalListeningTime.days) }} days</span>
                     </div>
                 </div>
-
             </div>
             <!-- END TOTAL LISTENING TIME -->
             <!-- END TOP ROW STATS -->
@@ -175,14 +172,6 @@
 
                         <p class="label">Top Day</p>
                         <h2 class="day">{{ result.topDay.full_date }}</h2>
-
-                        <div class="minutes-pill">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="9"></circle>
-                                <path d="M12 7v6l4 2"></path>
-                            </svg>
-                            <span>{{ "%.2f"|format(result.topDay.minutes) }} minutes</span>
-                        </div>
                     </div>
 
                     <div class="day-avatar-wrap">
@@ -193,7 +182,22 @@
                             </div>
                         </div>   
                     </div>
-
+                </div>
+                <div class="pills">
+                    <div class="minutes-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v6l4 2"></path>
+                        </svg>
+                        <span>{{ "{:,.0f}".format(result.topDay.minutes) }} minutes</span>
+                    </div>
+                    <div class="hours-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v6l4 2"></path>
+                        </svg>
+                        <span>{{ "{:,.0f}".format(result.topDay.hours) }} hours</span>
+                    </div>
                 </div>         
             </div>
             <!-- END TOP DAY -->
@@ -263,14 +267,31 @@
             <!-- END TOP MONTH -->
             <!-- END BOTTOM ROW STATS -->
         </div>
-        <!-- TODO: Add button to go to LLM chatbot -->
+        <div class="llm-button-wrap">
+            <a href="{{ url_for('llm_page') }}" class="llm-button">
+                <span>Ask AI About Your Music</span>
+                <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="M13 6l6 6-6 6"></path>
+                </svg>
+            </a>
+        </div>
     </div>
-    <a href="{{ url_for('llm_page') }}" class="llm-button">
-        Use LLM
-    </a>
 </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
+        // Exit confirmation popup
+        document.querySelectorAll('.logo-link, .new-analysis-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                const confirmLeave = confirm("Are you sure you want to go back? Your progress will be lost.");
+                
+                if (!confirmLeave) {
+                e.preventDefault();
+                }
+            });
+        });
+
         const monthlyData = JSON.parse('{{ result.monthlyListeningTime | tojson | safe }}');
         const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
         const values = months.map((m, i) => {

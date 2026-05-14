@@ -1,9 +1,14 @@
 import json
 import re
+import spotipy
 
 import ollama
 from flask import Flask, request, render_template
 from datetime import datetime
+from spotipy.oauth2 import SpotifyClientCredentials
+
+from dotenv import load_dotenv
+load_dotenv()
 
 from services.analysis import (
     calculateListeningStats,
@@ -11,6 +16,7 @@ from services.analysis import (
     has_filter,
     run_analysis_query,
 )
+
 from services.prompts import (
     get_artist_percentage_intent_prompt,
     get_clarification_prompt,
@@ -22,6 +28,7 @@ from services.prompts import (
 RAW_LISTENING_HISTORY = [] # Stores all uploaded listening history entries
 DASHBOARD_RESULT = {} # Stores listening stats from results.html
 CHAT_HISTORY = []
+spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
 
 app = Flask(__name__)
 
@@ -30,6 +37,42 @@ def return_with_memory(answer, original_question):
     CHAT_HISTORY.append({"role": "assistant", "content": answer})
     CHAT_HISTORY[:] = CHAT_HISTORY[-10:]
     return {"answer": answer}
+
+# Begin helper functions to pull artist and song images from Spotify
+def get_spotify_artist_image(artist_name):
+    if not artist_name:
+        return None
+
+    results = spotify.search(q=f"artist:{artist_name}", type="artist", limit=1)
+    items = results.get("artists", {}).get("items", [])
+
+    if not items:
+        return None
+
+    images = items[0].get("images", [])
+    return images[0]["url"] if images else None
+
+
+def get_spotify_track_image(song_key):
+    if not song_key:
+        return None
+
+    # Because current songs look like "artist - track"
+    if " - " in song_key:
+        artist, track = song_key.split(" - ", 1)
+        query = f'track:"{track}" artist:"{artist}"'
+    else:
+        query = song_key
+
+    results = spotify.search(q=query, type="track", limit=1)
+    items = results.get("tracks", {}).get("items", [])
+
+    if not items:
+        return None
+
+    album_images = items[0].get("album", {}).get("images", [])
+    return album_images[0]["url"] if album_images else None
+# Begin helper functions to pull artist and song images from Spotify
 
 @app.route("/")
 def index():
@@ -54,10 +97,46 @@ def upload_files():
         except Exception as e:
             print(f"Error reading {file.filename}: {e}")
 
+    # Error checking to make sure date filters are correct
+    if start_date is not None or end_date is not None:
+
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date() if start_date else None
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date() if end_date else None
+
+        dates = [
+            datetime.strptime(entry["endTime"], "%Y-%m-%d %H:%M").date()
+            for entry in all_entries
+            if entry.get("endTime")
+        ]
+
+        actual_start_date = min(dates)
+        actual_end_date = max(dates)
+
+        if start_date and start_date < actual_start_date:
+            return render_template("index.html", error="ERROR: Start date is before your listening history.")
+
+        if end_date and end_date > actual_end_date:
+            return render_template("index.html", error="ERROR: End date is after your listening history.")
+        
+        # Change dates back into strings for calculateListeningStats()
+        start_date = start_date.strftime("%Y-%m-%d") if start_date else None
+        end_date = end_date.strftime("%Y-%m-%d") if end_date else None
+
     RAW_LISTENING_HISTORY = all_entries
     result = calculateListeningStats(all_entries, start_date=start_date, end_date=end_date)
+
+    # Grab images for top artist and top song
+    result["topArtist"]["image_url"] = get_spotify_artist_image(result["topArtist"]["name"])
+    result["topSongMin"]["image_url"] = get_spotify_track_image(result["topSongMin"]["name"])
+
     DASHBOARD_RESULT = result
     return render_template("results.html", result=result)
+
+@app.route("/results")
+def results_page():
+    if not DASHBOARD_RESULT:
+        return render_template("index.html")
+    return render_template("results.html", result=DASHBOARD_RESULT)
 
 @app.route("/llm")
 def llm_page():

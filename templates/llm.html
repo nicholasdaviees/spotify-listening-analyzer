@@ -1,42 +1,179 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify LLM Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='llm-style.css') }}">
 </head>
 <body>
-    <h1>Ask About Your Listening History</h1>
+    <div class="content-wrap">
+        <div class="page-header">
+            <div class="website-title">
+            <a href="/" class="logo-link">
+                    <img src="{{ url_for('static', filename='images/spotify-icon.png') }}" class="spotify-icon">
+                    <h2>Spotify Listening <span class="highlight">Analyzer</span></h2>
+                </a>
+            </div>
 
-    <div id="chat-box"></div>
+            <a href="/results" class="return-btn">
+                <svg class="left-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 12H6"></path>
+                    <path d="M12 6l-6 6 6 6"></path>
+                </svg>
+                <span>Return to Results Page</span>
+            </a>
+        </div>
+        
+        <div class="page-title">
+            <h1><span class="highlight">Ask AI</span> About Your Listening History</h1>
+        </div>
 
-    <input 
-        type="text" 
-        id="user-question" 
-        placeholder="Ask something like: What artist did I binge the most?"
-    >
+        <div class="chat-box-container">
+            <div id="chat-box" class="chat-box">
+                <div class="welcome-wrapper">
+                    <svg class="bot-icon" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- antenna -->
+                        <path d="M60 18V30" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                        <circle cx="60" cy="14" r="7" fill="currentColor"/>
 
-    <button onclick="sendQuestion()">Send</button>
+                        <!-- side ears -->
+                        <rect x="23" y="39" width="12" height="20" rx="6" fill="currentColor"/>
+                        <rect x="85" y="39" width="12" height="20" rx="6" fill="currentColor"/>
 
+                        <!-- robot head -->
+                        <rect x="30" y="30" width="60" height="38" rx="18" stroke="currentColor" stroke-width="7"/>
+
+                        <!-- eyes -->
+                        <circle cx="50" cy="49" r="4.5" fill="currentColor"/>
+                        <circle cx="70" cy="49" r="4.5" fill="currentColor"/>
+                    </svg>
+
+                    <p class="welcome-title">Hi there! I'm your AI listening assistant.</p>
+                    <p class="welcome-first-description">I can help you explore your Spotify listening history.</p>
+                    <p class="welcome-second-description">Ask me anything!</p>
+                    <p class="welcome-subtitle">Ask me things like:</p>
+
+                    <div class="example-questions">
+                        <button class="example-question-btn">
+                            Who are my top 5 artists?
+                        </button>
+                        <button class="example-question-btn">
+                            What percent of my listening was Ed Sheeran?
+                        </button>
+                        <button class="example-question-btn">
+                            How much music did I listen to between April 10th, 2025, and April 22nd, 2025?
+                        </button>
+                        <button class="example-question-btn">
+                            Who was my least played artist?
+                        </button>
+                    </div>
+                </div>    
+            </div>
+
+            <div class="input-wrapper">
+                <textarea
+                    id="user-question"
+                    class="question-input"
+                    rows="1"
+                    placeholder="What's on your mind?"
+                    autocomplete="off"
+                ></textarea> 
+
+                <button class="question-input-button" onclick="sendQuestion()">
+                    <svg class="up-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20V6"></path>
+                        <path d="M6 12l6-6 6 6"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
-        async function sendQuestion() {
-            const input = document.getElementById("user-question");
-            const question = input.value;
 
-            const response = await fetch("/ask-llm", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ question })
+        // Exit confirmation popup
+        document.querySelectorAll('.logo-link, .return-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                const confirmLeave = confirm("Are you sure you want to go back? Your progress will be lost.");
+                
+                if (!confirmLeave) {
+                e.preventDefault();
+                }
             });
+        });
 
-            const data = await response.json();
+        const input = document.getElementById("user-question");
+
+        // Function to automatically ask llm example question when button is clicked
+        document.querySelectorAll(".example-question-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                input.value = btn.textContent.trim();
+                sendQuestion();
+            });
+        });
+
+        // Function to send question when enter key is pressed
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendQuestion();
+            }
+        });
+
+        // Autoscroll helper function
+        function scrollToBottom() {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendQuestion() {
+            const chatBox = document.getElementById("chat-box");
+            const question = input.value.trim();
+
+            if (!question) return;
 
             document.getElementById("chat-box").innerHTML += `
-                <p><strong>You:</strong> ${question}</p>
-                <p><strong>LLM:</strong> ${data.answer}</p>
+                <div class="message user" style="text-align: right; margin-bottom: 10px;">
+                    <div class="bubble">${question}</div>
+                </div>
             `;
 
+            const typingId = "llm-thinking-indicator";
+            chatBox.innerHTML += `
+                <div class="message llm" id="${typingId}">
+                    <div class="bubble typing">
+                        <div class="spinner"></div>
+                        <span class="typing-text">Processing your request...</span>
+                    </div>
+                </div>
+            `;
+
+            scrollToBottom();
+
             input.value = "";
+            
+            try {
+                const response = await fetch("/ask-llm", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                const data = await response.json();
+
+                const typingEl = document.getElementById(typingId);
+                typingEl.outerHTML = `
+                    <div class="message llm" style="text-align: left; margin-bottom: 10px;">
+                        <div class="bubble">${data.answer}</div>
+                    </div>
+                `;
+                } catch (error) {
+                    document.getElementById(typingId).remove();
+                }    
+
+            scrollToBottom();
         }
     </script>
 </body>

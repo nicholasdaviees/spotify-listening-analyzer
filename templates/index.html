@@ -15,9 +15,9 @@
     <div class="container">
         <div class="upload-card">
             <img src="{{ url_for('static', filename='images/upload-icon.png') }}" class="upload-icon">
-            <div class="upload-card-title">Upload Your Spotify JSON File to Get Started</div>
+            <div class="upload-card-title">Upload Your Spotify JSON File(s) to Get Started</div>
 
-            <form id="upload-form" class="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+            <form id="upload-form" class="upload-form" action="/upload" method="POST" enctype="multipart/form-data" autocomplete="off">
                 <div class="file-upload">
                     <input id="jsonFiles" name="jsonFiles" class="file-input" type="file" accept=".json" multiple />
                     <label for="jsonFiles" class="file-btn">Choose File</label>
@@ -28,18 +28,19 @@
                 <div class="date-group">
                     <div class="date-field">
                         <label>From:</label>
-                        <input type="date" name="startDate">
+                        <input type="date" id="startDate" name="startDate">
                     </div>
 
                     <div class="date-field">
                         <label>To:</label>
-                        <input type="date" name="endDate">
+                        <input type="date" id="endDate" name="endDate">
                     </div>
                 </div>  
                 
                 <div>
                     <button type="submit" class="analyze-submit-btn">Analyze My Listening</button>
                 </div>
+                <p id="fileError" class="file-error">{% if error %}{{ error }}{% endif %}</p>
             </form>
 
         </div>
@@ -49,8 +50,22 @@
         const form = document.getElementById("upload-form");
         const input = document.getElementById("jsonFiles");
         const fileName = document.getElementById("fileName");
+        const fileError = document.getElementById("fileError");
 
-        input.addEventListener("change", () => {
+        form.addEventListener("submit", (e) => {
+            if (input.files.length === 0) {
+                e.preventDefault();
+                fileError.textContent = "Please upload at least one JSON file.";
+
+                const btn = document.querySelector(".analyze-submit-btn");
+                btn.classList.add("error");
+                setTimeout(() => btn.classList.remove("error"), 300);
+            }
+        });
+
+        input.addEventListener("change", async () => {
+            fileError.textContent = "";
+
             if (input.files.length === 0) {
                 fileName.textContent = "No files chosen";
             } else if (input.files.length === 1) {
@@ -58,6 +73,30 @@
             } else {
                 fileName.textContent = `${input.files.length} files chosen`;
             }
+
+            // Calculate start and end date of uploaded files
+            const dates = [];
+
+            for (const file of input.files) {
+                const text = await file.text();
+                const data = JSON.parse(text);
+
+                if (!Array.isArray(data)) continue;
+
+                data.forEach(entry => {
+                    if (entry.endTime) {
+                        // "YYYY-MM-DD HR:MM" -> "YYYY-MM-DD"
+                        dates.push(entry.endTime.slice(0, 10));
+                    }
+                });
+            }    
+
+            if (dates.length === 0) return;
+            dates.sort();
+
+            // Update date filters to reflect file start and end dates
+            document.getElementById("startDate").value = dates[0];
+            document.getElementById("endDate").value = dates[dates.length - 1];
         });
     </script>
 </body>
