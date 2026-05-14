@@ -52,12 +52,19 @@
     <script>
         const input = document.getElementById("user-question");
 
+        // Function to send question when enter key is pressed
         input.addEventListener("keydown", function (e) {
             if (e.key === "Enter") {
                 e.preventDefault();
                 sendQuestion();
             }
         });
+
+        // Autoscroll helper function
+        function scrollToBottom() {
+            const chatBox = document.getElementById("chat-box");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
         async function sendQuestion() {
             const question = input.value;
@@ -67,6 +74,10 @@
                     <p><strong>You:</strong> ${question}</p>
                 </div>
             `;
+
+            scrollToBottom();
+
+            input.value = "";
 
             const response = await fetch("/ask-llm", {
                 method: "POST",
@@ -84,7 +95,7 @@
                 </div>
             `;
 
-            input.value = "";
+            scrollToBottom();
         }
     </script>
 </body>
