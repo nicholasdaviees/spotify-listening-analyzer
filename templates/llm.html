@@ -37,7 +37,7 @@
                     type="text"
                     id="user-question"
                     class="question-input"
-                    placeholder="Ask something like: What artist did I binge the most?"
+                    placeholder="Ask something like: What was my top song on July 4th, 2025?"
                 >   
 
                 <button class="question-input-button" onclick="sendQuestion()">
@@ -50,8 +50,16 @@
         </div>
     </div>
     <script>
+        const input = document.getElementById("user-question");
+
+        input.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendQuestion();
+            }
+        });
+
         async function sendQuestion() {
-            const input = document.getElementById("user-question");
             const question = input.value;
 
             document.getElementById("chat-box").innerHTML += `
