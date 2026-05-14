@@ -275,7 +275,8 @@ def calculateListeningStats(listeningHistory, start_date=None, end_date=None):
             "full_date": top_day[0].strftime("%m-%d-%Y"),
             "weekday": top_day[0].strftime("%a").upper(),
             "day": top_day[0].day,
-            "minutes": ms_to_min(top_day[1])
+            "minutes": ms_to_min(top_day[1]),
+            "hours": ms_to_hours(top_day[1])
         },
         "totalListeningTime": {
             "minutes": ms_to_min(total_listening_time_ms),

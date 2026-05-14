@@ -156,10 +156,6 @@ h1 { /* Highlight "Results" in page title */
   font-weight: 700;
 }
 
-.plays-pill, .days-pill {
-  margin-left: 10px;
-}
-
 .minutes-pill svg, .plays-pill svg, .hours-pill svg, .days-pill svg {
   width: 16px;
   height: 16px;
@@ -168,6 +164,7 @@ h1 { /* Highlight "Results" in page title */
 .pills {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 /* End results page general style */
 
@@ -280,24 +277,6 @@ h1 { /* Highlight "Results" in page title */
   max-width: 300px;
 }
 /* End top song specific style */
-
-/* Begin listening time specific style */
-.total-listening-time-hours-days {
-  color: #a5a5a5;
-  font-size: 16px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-}
-
-.dot {
-  font-size: 18px;
-  line-height: 1;
-  color: #a5a5a5;
-}
-/* End listening time specific style */
 
 /* Begin top day specific style */
 .day-avatar, .month-avatar {

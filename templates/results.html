@@ -96,7 +96,7 @@
                             <circle cx="12" cy="12" r="9"></circle>
                             <path d="M12 7v6l4 2"></path>
                         </svg>
-                        <span>{{ "%.2f"|format(result.topSongMin.minutes) }} minutes</span>
+                        <span>{{ "{:,.0f}".format(result.topSongMin.minutes) }} minutes</span>
                     </div>
                     <div class="plays-pill">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -126,7 +126,6 @@
                             <img src="{{ url_for('static', filename='images/total_listening_time_card_image.png') }}" />
                         </div>
                     </div>
-
                 </div>
 
                 <div class="pills">
@@ -152,7 +151,6 @@
                         <span>{{ "{:.1f}".format(result.totalListeningTime.days) }} days</span>
                     </div>
                 </div>
-
             </div>
             <!-- END TOTAL LISTENING TIME -->
             <!-- END TOP ROW STATS -->
@@ -174,14 +172,6 @@
 
                         <p class="label">Top Day</p>
                         <h2 class="day">{{ result.topDay.full_date }}</h2>
-
-                        <div class="minutes-pill">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="9"></circle>
-                                <path d="M12 7v6l4 2"></path>
-                            </svg>
-                            <span>{{ "%.2f"|format(result.topDay.minutes) }} minutes</span>
-                        </div>
                     </div>
 
                     <div class="day-avatar-wrap">
@@ -192,7 +182,22 @@
                             </div>
                         </div>   
                     </div>
-
+                </div>
+                <div class="pills">
+                    <div class="minutes-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v6l4 2"></path>
+                        </svg>
+                        <span>{{ "{:,.0f}".format(result.topDay.minutes) }} minutes</span>
+                    </div>
+                    <div class="hours-pill">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v6l4 2"></path>
+                        </svg>
+                        <span>{{ "{:,.0f}".format(result.topDay.hours) }} hours</span>
+                    </div>
                 </div>         
             </div>
             <!-- END TOP DAY -->
