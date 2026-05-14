@@ -28,19 +28,19 @@
                 <div class="date-group">
                     <div class="date-field">
                         <label>From:</label>
-                        <input type="date" name="startDate">
+                        <input type="date" id="startDate" name="startDate">
                     </div>
 
                     <div class="date-field">
                         <label>To:</label>
-                        <input type="date" name="endDate">
+                        <input type="date" id="startDate" name="startDate">
                     </div>
                 </div>  
                 
                 <div>
                     <button type="submit" class="analyze-submit-btn">Analyze My Listening</button>
                 </div>
-                <p id="fileError" class="file-error"></p>
+                <p id="fileError" class="file-error">{% if error %}{{ error }}{% endif %}</p>
             </form>
 
         </div>

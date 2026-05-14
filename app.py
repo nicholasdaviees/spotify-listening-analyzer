@@ -97,6 +97,31 @@ def upload_files():
         except Exception as e:
             print(f"Error reading {file.filename}: {e}")
 
+    # Error checking to make sure date filters are correct
+    if start_date is not None or end_date is not None:
+
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date() if start_date else None
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date() if end_date else None
+
+        dates = [
+            datetime.strptime(entry["endTime"], "%Y-%m-%d %H:%M").date()
+            for entry in all_entries
+            if entry.get("endTime")
+        ]
+
+        actual_start_date = min(dates)
+        actual_end_date = max(dates)
+
+        if start_date and start_date < actual_start_date:
+            return render_template("index.html", error="ERROR: Start date is before your listening history.")
+
+        if end_date and end_date > actual_end_date:
+            return render_template("index.html", error="ERROR: End date is after your listening history.")
+        
+        # Change dates back into strings for calculateListeningStats()
+        start_date = start_date.strftime("%Y-%m-%d") if start_date else None
+        end_date = end_date.strftime("%Y-%m-%d") if end_date else None
+
     RAW_LISTENING_HISTORY = all_entries
     result = calculateListeningStats(all_entries, start_date=start_date, end_date=end_date)
 
