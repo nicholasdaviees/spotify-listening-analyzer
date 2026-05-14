@@ -32,14 +32,18 @@
         <div class="chat-box-container">
             <div id="chat-box" class="chat-box"></div>
 
-            <input 
-                type="text"
-                id="user-question"
-                class="question-input"
-                placeholder="Ask something like: What artist did I binge the most?"
-            >   
+            <div class="input-wrapper">
+                <input 
+                    type="text"
+                    id="user-question"
+                    class="question-input"
+                    placeholder="Ask something like: What artist did I binge the most?"
+                >   
 
-            <button class="question-input-button" onclick="sendQuestion()">Send</button>
+                <button class="question-input-button" onclick="sendQuestion()">
+                    Send
+                </button>
+            </div>
         </div>
     </div>
     <script>

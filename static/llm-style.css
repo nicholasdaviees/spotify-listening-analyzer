@@ -142,21 +142,23 @@ h1 { /* Highlight "Ask AI" in page title */
   line-height: 1.5;
 }
 
-/* User input */
-.question-input {
+/* Begin user input style */
+.input-wrapper {
+  position: relative;
   width: 85%;
+}
+
+/* User input box */
+.question-input {
+  width: 100%;
   margin-top: 35px;
-
-  padding: 20px 28px;
+  padding: 20px 120px 20px 35px;
   box-sizing: border-box;
-
   background: #1e1e1e;
   color: #e0e0e0;
-
   border: none;
   outline: none;
   border-radius: 35px;
-
   font-size: 22px;
 }
 
@@ -166,32 +168,18 @@ h1 { /* Highlight "Ask AI" in page title */
 
 /* Send button */
 .question-input-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 30px;
+  position: absolute;
+  top: 47%;
+  padding: 0 20px;
+  right: 10px;
   border-radius: 999px;
-  gap: 8px;
-
-  height: 25px;
+  height: 40px;
   background: #65D56E;
   color: #000000;
   text-decoration: none;
   font-size: 20px;
   font-weight: 800;
-  line-height: 1;
   cursor: pointer;
-
   border: none;
-  box-shadow: 0 0px 10px #65D56E;
-  transition: all 0.3s ease;
 }
-
-.question-input-button:hover {
-  box-shadow: 0 0px 18px #65D56E;
-  transform: scale(1.02);
-}
-
-.question-input-button:active {
-  transform: scale(0.97);
-}
+/* End user input style */
