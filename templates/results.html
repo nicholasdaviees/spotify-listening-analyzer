@@ -280,6 +280,18 @@
 </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+
+        // Exit confirmation popup
+        document.querySelectorAll('.logo-link, .new-analysis-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                const confirmLeave = confirm("Are you sure you want to go back? Your progress will be lost.");
+                
+                if (!confirmLeave) {
+                e.preventDefault();
+                }
+            });
+        });
+
         const monthlyData = JSON.parse('{{ result.monthlyListeningTime | tojson | safe }}');
         const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
         const values = months.map((m, i) => {

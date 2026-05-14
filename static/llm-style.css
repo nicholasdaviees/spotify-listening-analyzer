@@ -71,23 +71,23 @@ h1 { /* Highlight "Ask AI" in page title */
   margin: 0;
 }
 
-.plus-icon {
-  width: 20px;
-  height: 20px;
+.left-arrow-icon {
+  width: 25px;
+  height: 25px;
   color: #65D56E;
   flex-shrink: 0;
   display: block;
   transform: translateY(-1.5px);
 }
 
-.new-analysis-btn {
+.return-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 
   height: 25px;
-  padding: 8px 22px;
+  padding: 12px 22px;
   border-radius: 999px;
 
   background: #1F1E1E;
@@ -103,12 +103,12 @@ h1 { /* Highlight "Ask AI" in page title */
   transition: all 0.3s ease;
 }
 
-.new-analysis-btn:hover {
+.return-btn:hover {
   box-shadow: 0 0px 18px #65D56E;
   transform: scale(1.02);
 }
 
-.new-analysis-btn:active {
+.return-btn:active {
   transform: scale(0.97);
 }
 /* End header style */
@@ -265,7 +265,7 @@ h1 { /* Highlight "Ask AI" in page title */
   transform: scale(1.03);
 }
 
-.arrow-icon {
+.up-arrow-icon {
   width: 22px;
   height: 22px;
   transform: translateY(2px);

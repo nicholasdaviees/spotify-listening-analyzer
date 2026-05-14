@@ -59,6 +59,12 @@ def upload_files():
     DASHBOARD_RESULT = result
     return render_template("results.html", result=result)
 
+@app.route("/results")
+def results_page():
+    if not DASHBOARD_RESULT:
+        return render_template("index.html")
+    return render_template("results.html", result=DASHBOARD_RESULT)
+
 @app.route("/llm")
 def llm_page():
     return render_template("llm.html")
