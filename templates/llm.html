@@ -55,18 +55,18 @@
                     <p class="welcome-subtitle">Ask me things like:</p>
 
                     <div class="example-questions">
-                        <div class="example-question">
+                        <button class="example-question-btn">
                             Who are my top 5 artists?
-                        </div>
-                        <div class="example-question">
+                        </button>
+                        <button class="example-question-btn">
                             What percent of my listening was Ed Sheeran?
-                        </div>
-                        <div class="example-question">
+                        </button>
+                        <button class="example-question-btn">
                             How much music did I listen to between April 10th, 2025, and April 22nd, 2025?
-                        </div>
-                        <div class="example-question">
+                        </button>
+                        <button class="example-question-btn">
                             Who was my least played artist?
-                        </div>
+                        </button>
                     </div>
                 </div>    
             </div>
@@ -76,7 +76,7 @@
                     id="user-question"
                     class="question-input"
                     rows="1"
-                    placeholder="Ask something like: What was my top song on July 4th, 2025?"
+                    placeholder="What's on your mind?"
                     autocomplete="off"
                 ></textarea> 
 
@@ -104,6 +104,14 @@
 
         const input = document.getElementById("user-question");
 
+        // Function to automatically ask llm example question when button is clicked
+        document.querySelectorAll(".example-question-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                input.value = btn.textContent.trim();
+                sendQuestion();
+            });
+        });
+
         // Function to send question when enter key is pressed
         input.addEventListener("keydown", function (e) {
             if (e.key === "Enter") {
@@ -120,7 +128,7 @@
 
         async function sendQuestion() {
             const chatBox = document.getElementById("chat-box");
-            const question = input.value;
+            const question = input.value.trim();
 
             if (!question) return;
 

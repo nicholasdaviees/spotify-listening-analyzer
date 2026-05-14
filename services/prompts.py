@@ -72,6 +72,8 @@ def get_clarity_prompt(question):
 
         Important:
         - Follow-up questions like "what was my top song from him?" are VALID and should return "yes".
+        - Do NOT reject a question just because the date is in the future relative to today's date.
+        - If the question asks about a date or date range, ALWAYS return "yes".
 
         Question:
         {question}
@@ -125,7 +127,15 @@ def get_planner_prompt(question, conversation_context=""):
         - If the user asks to "list all", "show all", or "everything", override limit and set it to 100.
         - Include filter keys with null when they are unused.
         - Only create plans for questions supported by the available group_by, metric, and filters.
+        - If the user says "that time", "that period", "then", or "same time", use the most recent date range from the conversation context.
         - If the user gives a specific date like 8/2/2025, July 10 2025, 2025-08-02, or "August 8th", put it in filters.date as YYYY-MM-DD.
+        - You MUST correctly interpret natural language date ranges such as:
+            - "between July 10th and July 30th 2025"
+            - "from July 10th to July 30th"
+            - "July 10th - July 30th 2025"
+        - For date ranges, NEVER use filters.date. Convert them into:
+            - filters.start_date: YYYY-MM-DD
+            - filters.end_date: YYYY-MM-DD
         - If the user asks for a specific date, exact date, "what date", "which date", "specific day", or "exact day", use group_by: "date".
         - Do NOT use group_by: "weekday" unless the user asks for a day of week, like Monday, Tuesday, weekend, or weekday.
         - If the question contains "between", "from", or a date range using "and" or "-", NEVER use filters.date. Use filters.start_date and filters.end_date in YYYY-MM-DD format.
