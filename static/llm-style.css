@@ -8,15 +8,21 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
+.content-wrap {
+  width: 90%;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
 /* Begin header style */
 .page-header {
+  width: 100%;
+  max-width: 1800px;
+  margin: 1.9% auto 2.8%;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 1.85%;
-  margin-bottom: 2.8%;
-  margin-left: 7%;
-  width: 100%;
 }
 
 .spotify-icon {
@@ -82,7 +88,6 @@ h1 { /* Highlight "Ask AI" in page title */
 
   height: 25px;
   padding: 8px 22px;
-  margin-right: 14%;
   border-radius: 999px;
 
   background: #1F1E1E;
@@ -110,7 +115,7 @@ h1 { /* Highlight "Ask AI" in page title */
 
 /* Main chatbot area */
 .chat-box-container {
-  width: 100%;
+  width: 95%;
   max-width: 1800px;
   margin: 40px auto 0;
   box-sizing: border-box;
@@ -121,7 +126,7 @@ h1 { /* Highlight "Ask AI" in page title */
 
 /* LLM output box */
 .chat-box {
-  width: 85%;
+  width: 100%;
   min-height: 150px;
   max-height: 420px;
   overflow-y: auto;
