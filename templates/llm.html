@@ -132,21 +132,21 @@
 
             if (!question) return;
 
-            document.getElementById("chat-box").innerHTML += `
+            chatBox.insertAdjacentHTML("beforeend", `
                 <div class="message user" style="text-align: right; margin-bottom: 10px;">
                     <div class="bubble">${question}</div>
                 </div>
-            `;
+            `);
 
             const typingId = "llm-thinking-indicator";
-            chatBox.innerHTML += `
+            chatBox.insertAdjacentHTML("beforeend", `
                 <div class="message llm" id="${typingId}">
                     <div class="bubble typing">
                         <div class="spinner"></div>
                         <span class="typing-text">Processing your request...</span>
                     </div>
                 </div>
-            `;
+            `);
 
             scrollToBottom();
 
