@@ -113,7 +113,7 @@ h1 { /* Highlight "Ask AI" in page title */
 }
 /* End header style */
 
-/* Main chatbot area */
+/* Begin LLM output box style */
 .chat-box-container {
   width: 95%;
   max-width: 1800px;
@@ -124,7 +124,6 @@ h1 { /* Highlight "Ask AI" in page title */
   align-items: center;
 }
 
-/* LLM output box */
 .chat-box {
   width: 100%;
   min-height: 150px;
@@ -141,6 +140,69 @@ h1 { /* Highlight "Ask AI" in page title */
   font-size: 18px;
   line-height: 1.5;
 }
+
+.message {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.message.llm {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 65%;
+  padding: 14px 18px;
+  border-radius: 20px;
+  font-size: 18px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message.user .bubble {
+  background: #65D56E;
+  color: black;
+  border-bottom-right-radius: 6px; /* for tail effect */
+}
+
+.message.llm .bubble {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-bottom-left-radius: 6px;
+}
+
+.bubble.typing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 60px;
+  min-height: 40px;
+}
+
+.typing-text { /* "Processing your request..." text */
+  font-size: 16px;
+  color: #9c9c9c;
+  font-style: italic;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(101, 213, 110, 0.25);
+  border-top: 3px solid #65D56E;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/* End LLM output box style */
 
 /* Begin user input style */
 .input-wrapper {
@@ -209,39 +271,3 @@ h1 { /* Highlight "Ask AI" in page title */
     transform: translateY(2px);
 }
 /* End user input style */
-
-
-
-.message {
-  display: flex;
-  margin-bottom: 12px;
-}
-
-.message.user {
-  justify-content: flex-end;
-}
-
-.message.llm {
-  justify-content: flex-start;
-}
-
-.bubble {
-  max-width: 65%;
-  padding: 14px 18px;
-  border-radius: 20px;
-  font-size: 18px;
-  line-height: 1.4;
-  word-wrap: break-word;
-}
-
-.message.user .bubble {
-  background: #65D56E;
-  color: black;
-  border-bottom-right-radius: 6px; /* little tail effect */
-}
-
-.message.llm .bubble {
-  background: #2a2a2a;
-  color: #e0e0e0;
-  border-bottom-left-radius: 6px;
-}

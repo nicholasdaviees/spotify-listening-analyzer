@@ -67,7 +67,10 @@
         }
 
         async function sendQuestion() {
+            const chatBox = document.getElementById("chat-box");
             const question = input.value;
+
+            if (!question) return;
 
             document.getElementById("chat-box").innerHTML += `
                 <div class="message user" style="text-align: right; margin-bottom: 10px;">
@@ -75,25 +78,40 @@
                 </div>
             `;
 
+            const typingId = "llm-thinking-indicator";
+            chatBox.innerHTML += `
+                <div class="message llm" id="${typingId}">
+                    <div class="bubble typing">
+                        <div class="spinner"></div>
+                        <span class="typing-text">Processing your request...</span>
+                    </div>
+                </div>
+            `;
+
             scrollToBottom();
 
             input.value = "";
+            
+            try {
+                const response = await fetch("/ask-llm", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ question })
+                });
 
-            const response = await fetch("/ask-llm", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ question })
-            });
+                const data = await response.json();
 
-            const data = await response.json();
-
-            document.getElementById("chat-box").innerHTML += `
-                <div class="message llm" style="text-align: left; margin-bottom: 10px;">
-                    <div class="bubble">${data.answer}</div>
-                </div>
-            `;
+                const typingEl = document.getElementById(typingId);
+                typingEl.outerHTML = `
+                    <div class="message llm" style="text-align: left; margin-bottom: 10px;">
+                        <div class="bubble">${data.answer}</div>
+                    </div>
+                `;
+                } catch (error) {
+                    document.getElementById(typingId).remove();
+                }    
 
             scrollToBottom();
         }
