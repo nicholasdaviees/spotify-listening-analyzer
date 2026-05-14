@@ -170,8 +170,8 @@ h1 { /* Highlight "Ask AI" in page title */
 .question-input-button {
   position: absolute;
   top: 47%;
-  padding: 0 20px;
-  right: 10px;
+  padding: 0 10px;
+  right: 20px;
   border-radius: 999px;
   height: 40px;
   background: #65D56E;
@@ -181,5 +181,11 @@ h1 { /* Highlight "Ask AI" in page title */
   font-weight: 800;
   cursor: pointer;
   border: none;
+}
+
+.arrow-icon {
+    width: 22px;
+    height: 22px;
+    transform: translateY(2px);
 }
 /* End user input style */
