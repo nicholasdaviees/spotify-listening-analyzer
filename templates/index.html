@@ -17,7 +17,7 @@
             <img src="{{ url_for('static', filename='images/upload-icon.png') }}" class="upload-icon">
             <div class="upload-card-title">Upload Your Spotify JSON File(s) to Get Started</div>
 
-            <form id="upload-form" class="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+            <form id="upload-form" class="upload-form" action="/upload" method="POST" enctype="multipart/form-data" autocomplete="off">
                 <div class="file-upload">
                     <input id="jsonFiles" name="jsonFiles" class="file-input" type="file" accept=".json" multiple />
                     <label for="jsonFiles" class="file-btn">Choose File</label>
@@ -33,7 +33,7 @@
 
                     <div class="date-field">
                         <label>To:</label>
-                        <input type="date" id="startDate" name="startDate">
+                        <input type="date" id="endDate" name="endDate">
                     </div>
                 </div>  
                 
@@ -63,7 +63,7 @@
             }
         });
 
-       input.addEventListener("change", () => {
+        input.addEventListener("change", async () => {
             fileError.textContent = "";
 
             if (input.files.length === 0) {
@@ -73,6 +73,30 @@
             } else {
                 fileName.textContent = `${input.files.length} files chosen`;
             }
+
+            // Calculate start and end date of uploaded files
+            const dates = [];
+
+            for (const file of input.files) {
+                const text = await file.text();
+                const data = JSON.parse(text);
+
+                if (!Array.isArray(data)) continue;
+
+                data.forEach(entry => {
+                    if (entry.endTime) {
+                        // "YYYY-MM-DD HR:MM" -> "YYYY-MM-DD"
+                        dates.push(entry.endTime.slice(0, 10));
+                    }
+                });
+            }    
+
+            if (dates.length === 0) return;
+            dates.sort();
+
+            // Update date filters to reflect file start and end dates
+            document.getElementById("startDate").value = dates[0];
+            document.getElementById("endDate").value = dates[dates.length - 1];
         });
     </script>
 </body>
