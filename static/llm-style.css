@@ -126,8 +126,7 @@ h1 { /* Highlight "Ask AI" in page title */
 
 .chat-box {
   width: 100%;
-  min-height: 150px;
-  max-height: 600px;
+  height: 585px;
   overflow-y: auto;
   background: #1e1e1e;
   box-shadow: 0 0px 10px #65D56E;
@@ -144,12 +143,18 @@ h1 { /* Highlight "Ask AI" in page title */
   flex-direction: column; 
   justify-content: center;
   align-items: center;
+  gap: 10px;
+}
+
+.welcome-wrapper p {
+  margin: 0;
 }
 
 .bot-icon {
   color: #65D56E;
   height: 90px;
   width: 90px;
+  margin-top: -10px;
 }
 
 .welcome-title {
@@ -157,7 +162,13 @@ h1 { /* Highlight "Ask AI" in page title */
   font-size: 25px;
 }
 
-.welcome-first-description, .welcome-second-description {
+.welcome-first-description {
+  color: #BFBFBE;
+  font-style: italic;
+  font-size: 18px;
+}
+
+.welcome-second-description {
   color: #BFBFBE;
   font-style: italic;
   font-size: 18px;
@@ -166,7 +177,32 @@ h1 { /* Highlight "Ask AI" in page title */
 .welcome-subtitle {
   color: #65D56E;
   font-weight: 600;
-  font-size: 18px
+  font-size: 18px;
+}
+
+.example-questions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  gap: 8px;
+}
+
+.example-question {
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: rgba(40, 40, 40, 0.6);
+  border: 1px solid #3A4F39;
+  font-size: 18px;
+  transition: all 0.25s ease;
+}
+
+.example-question:hover {
+  background: rgba(60, 60, 60, 0.7);  
+  border-color: rgba(101, 213, 110, 0.5);
+  box-shadow: 0 0 10px rgba(101, 213, 110, 0.3);
+  transform: scale(1.01);
+  cursor: pointer;
 }
 
 .message {
