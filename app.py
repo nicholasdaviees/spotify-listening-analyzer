@@ -345,11 +345,11 @@ def ask_llm():
         analysis_result = {}
 
         for index, query in enumerate(queries, start=1):
-            analysis_result[f"query_{index}"] = run_analysis_query(DASHBOARD_RESULT, RAW_LISTENING_HISTORY, query)
+            analysis_result[f"query_{index}"] = run_analysis_query(RAW_LISTENING_HISTORY, query)
 
     # For single query
     else:
-        analysis_result = run_analysis_query(DASHBOARD_RESULT, RAW_LISTENING_HISTORY, plan)
+        analysis_result = run_analysis_query(RAW_LISTENING_HISTORY, plan)
 
     explanation_prompt = get_explanation_prompt(question, analysis_result)
 

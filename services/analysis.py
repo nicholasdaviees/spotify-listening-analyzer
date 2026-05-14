@@ -69,7 +69,7 @@ def compute_artist_percentage(dashboard_result, artist_name):
         "percent": artist_percentage
     }
 
-def run_analysis_query(dashboard_result, raw_listening_history, plan):
+def run_analysis_query(raw_listening_history, plan):
     # Read analysis plan
     group_by = plan.get("group_by", "artist")
     metric = plan.get("metric", "minutes")
