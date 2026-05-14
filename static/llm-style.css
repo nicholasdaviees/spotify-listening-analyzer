@@ -129,16 +129,44 @@ h1 { /* Highlight "Ask AI" in page title */
   min-height: 150px;
   max-height: 600px;
   overflow-y: auto;
-
   background: #1e1e1e;
   box-shadow: 0 0px 10px #65D56E;
   border-radius: 40px;
-
   padding: 35px 45px;
   box-sizing: border-box;
-
   font-size: 18px;
   line-height: 1.5;
+}
+
+.welcome-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+}
+
+.bot-icon {
+  color: #65D56E;
+  height: 90px;
+  width: 90px;
+}
+
+.welcome-title {
+  font-weight: 600;
+  font-size: 25px;
+}
+
+.welcome-first-description, .welcome-second-description {
+  color: #BFBFBE;
+  font-style: italic;
+  font-size: 18px;
+}
+
+.welcome-subtitle {
+  color: #65D56E;
+  font-weight: 600;
+  font-size: 18px
 }
 
 .message {

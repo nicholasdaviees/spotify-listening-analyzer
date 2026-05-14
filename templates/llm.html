@@ -30,7 +30,45 @@
         </div>
 
         <div class="chat-box-container">
-            <div id="chat-box" class="chat-box"></div>
+            <div id="chat-box" class="chat-box">
+                <div class="welcome-wrapper">
+                    <svg class="bot-icon" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- antenna -->
+                        <path d="M60 18V30" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+                        <circle cx="60" cy="14" r="7" fill="currentColor"/>
+
+                        <!-- side ears -->
+                        <rect x="23" y="39" width="12" height="20" rx="6" fill="currentColor"/>
+                        <rect x="85" y="39" width="12" height="20" rx="6" fill="currentColor"/>
+
+                        <!-- robot head -->
+                        <rect x="30" y="30" width="60" height="38" rx="18" stroke="currentColor" stroke-width="7"/>
+
+                        <!-- eyes -->
+                        <circle cx="50" cy="49" r="4.5" fill="currentColor"/>
+                        <circle cx="70" cy="49" r="4.5" fill="currentColor"/>
+                    </svg>
+
+                    <p class="welcome-title">Hi there! I'm your AI listening assistant.</p>
+                    <p class="welcome-first-description">I can help you explore your Spotify listening history.</p>
+                    <p class="welcome-second-description">Ask me anything!</p>
+                    <p class="welcome-subtitle">Ask me things like:</p>
+
+                    <div class="example-question">
+                        Who are my top 5 artists?
+                    </div>
+                    <div class="example-question">
+                        What percent of my listening was Ed Sheeran?
+                    </div>
+                    <div class="example-question">
+                        How many minutes of music did I listen to between April 10th, 2025, and April 22nd, 2025?
+                    </div>
+                    <div class="example-question">
+                        Who was my least played artist?
+                    </div>
+
+                </div>    
+            </div>
 
             <div class="input-wrapper">
                 <textarea
@@ -51,6 +89,18 @@
         </div>
     </div>
     <script>
+
+        // Exit confirmation popup
+        document.querySelectorAll('.logo-link, .return-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                const confirmLeave = confirm("Are you sure you want to go back? Your progress will be lost.");
+                
+                if (!confirmLeave) {
+                e.preventDefault();
+                }
+            });
+        });
+
         const input = document.getElementById("user-question");
 
         // Function to send question when enter key is pressed
