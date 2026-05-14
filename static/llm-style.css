@@ -151,19 +151,24 @@ h1 { /* Highlight "Ask AI" in page title */
 /* User input box */
 .question-input {
   width: 100%;
+  min-height: 60px;
+  max-height: 150px;
   margin-top: 35px;
-  padding: 20px 120px 20px 35px;
+  padding: 20px 120px 14px 35px;
   box-sizing: border-box;
   background: #1e1e1e;
   color: #e0e0e0;
   border: none;
-  outline: none;
   border-radius: 35px;
+  font-family: 'Segoe UI', sans-serif;
   font-size: 18px;
+  resize: none;
+  overflow-y: auto;
 }
 
 .question-input::placeholder {
   color: #9c9c9c;
+  font-family: 'Segoe UI', sans-serif;
   font-style: italic;
   font-size: 18px;
 }
