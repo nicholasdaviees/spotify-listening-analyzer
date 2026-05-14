@@ -266,8 +266,8 @@ h1 { /* Highlight "Ask AI" in page title */
 }
 
 .arrow-icon {
-    width: 22px;
-    height: 22px;
-    transform: translateY(2px);
+  width: 22px;
+  height: 22px;
+  transform: translateY(2px);
 }
 /* End user input style */

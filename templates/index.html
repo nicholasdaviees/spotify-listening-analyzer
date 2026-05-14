@@ -40,6 +40,7 @@
                 <div>
                     <button type="submit" class="analyze-submit-btn">Analyze My Listening</button>
                 </div>
+                <p id="fileError" class="file-error"></p>
             </form>
 
         </div>
@@ -49,8 +50,22 @@
         const form = document.getElementById("upload-form");
         const input = document.getElementById("jsonFiles");
         const fileName = document.getElementById("fileName");
+        const fileError = document.getElementById("fileError");
 
-        input.addEventListener("change", () => {
+        form.addEventListener("submit", (e) => {
+            if (input.files.length === 0) {
+                e.preventDefault();
+                fileError.textContent = "Please upload at least one JSON file.";
+
+                const btn = document.querySelector(".analyze-submit-btn");
+                btn.classList.add("error");
+                setTimeout(() => btn.classList.remove("error"), 300);
+            }
+        });
+
+       input.addEventListener("change", () => {
+            fileError.textContent = "";
+
             if (input.files.length === 0) {
                 fileName.textContent = "No files chosen";
             } else if (input.files.length === 1) {

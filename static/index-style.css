@@ -155,3 +155,22 @@ h1 {
 .analyze-submit-btn:active {
   transform: scale(0.97);
 }
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+.analyze-submit-btn.error {
+  animation: shake 0.3s;
+}
+
+.file-error {
+  margin-top: 30px;
+  color: #ff6b6b;
+  font-size: 15px;
+  font-style: italic;
+}
