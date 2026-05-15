@@ -163,7 +163,7 @@ def ask_llm():
     clarity_prompt = get_clarity_prompt(original_question)
 
     clarity_response = ollama.chat(
-        model="qwen2.5:14b",
+        model="qwen2.5:3b",
         messages=[{"role": "user", "content": clarity_prompt}],
         options={"temperature": 0}
     )

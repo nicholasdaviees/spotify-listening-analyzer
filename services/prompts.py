@@ -81,70 +81,62 @@ def get_clarity_prompt(question):
 
 def get_planner_prompt(question, conversation_context=""):
     return f"""
-        You convert Spotify listening questions into JSON analysis plans.
+        You convert Spotify listening-history questions into JSON analysis plans.
 
         Return ONLY valid JSON.
 
-        Available group_by values:
-        - artist
-        - track
-        - weekday
-        - month
-        - year
-        - date
+        group_by:
+        artist, track, weekday, month, year, date
 
-        Available sort values:
-        - desc
-        - asc
+        metric:
+        minutes, plays
 
-        Available metric values:
-        - minutes
-        - plays
+        sort:
+        desc, asc
 
-        Available filters:
-        - artist
-        - year
-        - month
-        - weekday
-        - date
-        - start_date
-        - end_date
+        filters:
+        artist, year, month, weekday, date, start_date, end_date
 
         Conversation context:
         {conversation_context}
 
-        Use the conversation context only to resolve follow-up references.
+        Use conversation context ONLY for follow-up references like:
+        him, her, them, that artist, that song, that time, that period, then, same time.
 
         Rules:
         - Return JSON only.
-        - Do not write Python.
-        - Do not explain.
-        - Do not perform calculations yourself.
-        - Only use numbers provided in the computed result.
-        - Use actual JSON null, not the string "null".
-        - Use null for unknown or unused filters.
-        - limit should usually be 10.
-        - If the user asks to "list all", "show all", or "everything", override limit and set it to 100.
-        - Include filter keys with null when they are unused.
-        - Only create plans for questions supported by the available group_by, metric, and filters.
-        - If the user says "that time", "that period", "then", or "same time", use the most recent date range from the conversation context.
-        - If the user gives a specific date like 8/2/2025, July 10 2025, 2025-08-02, or "August 8th", put it in filters.date as YYYY-MM-DD.
-        - You MUST correctly interpret natural language date ranges such as:
-            - "between July 10th and July 30th 2025"
-            - "from July 10th to July 30th"
-            - "July 10th - July 30th 2025"
-        - For date ranges, NEVER use filters.date. Convert them into:
-            - filters.start_date: YYYY-MM-DD
-            - filters.end_date: YYYY-MM-DD
-        - If the user asks for a specific date, exact date, "what date", "which date", "specific day", or "exact day", use group_by: "date".
-        - Do NOT use group_by: "weekday" unless the user asks for a day of week, like Monday, Tuesday, weekend, or weekday.
-        - If the question contains "between", "from", or a date range using "and" or "-", NEVER use filters.date. Use filters.start_date and filters.end_date in YYYY-MM-DD format.
-        - If the user asks for more than one grouped result, use type: "multi_aggregation".
-        - If the user asks for a total over a date range AND a top artist/song/day in that same range, use type: "multi_aggregation" and apply the same start_date/end_date filters to every query.
-        - If the question requires data that is not available (e.g., genre, mood, lyrics, album), return: {{"unsupported": true, "reason": "brief reason"}}
-        - Use sort: "desc" for "top", "most", "highest", or "longest".
-        - Use sort: "asc" for "least", "lowest", "shortest", or "smallest".
-        - If sort is unknown, use "desc".
+        - Do not explain or write Python.
+        - Do not perform calculations.
+        - Use actual JSON null values.
+        - Include all filter keys with null for unused filters.
+        - Only create plans supported by the available group_by, metric, and filters.
+        - Default limit = 10.
+        - Use limit = 100 for "list all", "show all", or "everything".
+        - Use sort="desc" for top/most/highest/longest.
+        - Use sort="asc" for least/lowest/shortest/smallest.
+        - Default sort = "desc".
+
+        Date handling:
+        - Exact dates use filters.date in YYYY-MM-DD.
+        - Date ranges NEVER use filters.date.
+        - Date ranges use filters.start_date and filters.end_date in YYYY-MM-DD.
+        - Correctly interpret ranges like:
+        - between July 10th and July 30th 2025
+        - from July 10th to July 30th
+        - July 10th - July 30th 2025
+        - If the user says "that time", "that period", "then", or "same time", use the latest date range from conversation context.
+
+        Grouping:
+        - Use group_by="date" for exact/specific date/day questions.
+        - Use group_by="weekday" ONLY for weekday questions.
+
+        Multi-query:
+        - Use {{"type":"multi_aggregation"}} for multiple grouped results.
+        - Apply identical start_date/end_date filters to all queries in the same range.
+
+        Unsupported data:
+        If the question requires unavailable data (genre, mood, lyrics, album), return:
+        {{"unsupported": true, "reason": "brief reason"}}
 
         Examples:
 
