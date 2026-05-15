@@ -1,142 +1,123 @@
 import json
 
-def get_artist_percentage_intent_prompt(question, conversation_context=""):
-    return f"""
-        Classify this Spotify listening-history question.
-
-        Return ONLY valid JSON.
-
-        Possible intents:
-        - artist_percentage
-        - other
-
-        Rules:
-        - Only use artist_percentage if the CURRENT question asks for percent, percentage, share, portion, or fraction of listening from one or more artists.
-        - Do NOT use artist_percentage just because the conversation context contains a previous percentage answer.
-        - If the CURRENT question asks about hours, minutes, plays, top song, top track, "that song", or listening time for a song, return {{"intent": "other"}}.
-        - For artist_percentage, extract artist names into an artists list.
-        - Use the conversation context only to resolve references like him, her, them, that artist, or it.
-
-        Conversation context:
-        {conversation_context}
-
-        Use the conversation context to resolve references like:
-        - him
-        - her
-        - them
-        - that artist
-        - that song
-        - that date
-        - it
-        - then
-        - that period
-        - same time
-
-        Question:
-        {question}
-
-        Examples:
-
-        Question: What percentage of my listening is from Ed Sheeran?
-        {{"intent": "artist_percentage", "artists": ["Ed Sheeran"]}}
-
-        Question: How much of my listening comes from Ed Sheeran and Taylor Swift?
-        {{"intent": "artist_percentage", "artists": ["Ed Sheeran", "Taylor Swift"]}}
-
-        Question: What are my top songs?
-        {{"intent": "other"}}
-    """
-
-def get_clarity_prompt(question):
-    return f"""
-        Is this a meaningful Spotify listening-history question?
-
-        Return ONLY "yes" or "no".
-
-        Say "yes" if the question asks about Spotify listening history, even if the data may not be available.
-
-        Say "yes" if the question asks about:
-        - top artists or songs
-        - listening time (minutes or hours)
-        - plays
-        - a specific artist
-        - a specific song
-        - a specific date or date range
-        - follow-up questions using words like "him", "that artist", "that song", "then"
-        - genres, moods, albums, playlists, or other Spotify metadata
-
-        Say "no" only if the question is:
-        - random text
-        - unrelated to Spotify listening history
-        - too vague to answer even with context
-
-        Important:
-        - Follow-up questions like "what was my top song from him?" are VALID and should return "yes".
-        - Do NOT reject a question just because the date is in the future relative to today's date.
-        - If the question asks about a date or date range, ALWAYS return "yes".
-
-        Question:
-        {question}
-    """
-
 def get_planner_prompt(question, conversation_context=""):
     return f"""
-        You convert Spotify listening-history questions into JSON analysis plans.
+    You convert Spotify listening-history questions into JSON analysis plans.
 
-        Return ONLY valid JSON.
+    Return ONLY valid JSON.
 
-        group_by:
-        artist, track, weekday, month, year, date
+    First classify the question:
 
-        metric:
-        minutes, plays
+    - If the question is unrelated, meaningless, or too vague, return:
+    {{"valid": false, "reason": "brief reason"}}
 
-        sort:
-        desc, asc
+    If the current question is feedback, correction, or complaint about the previous answer, such as:
+    - that answer is wrong
+    - that is not correct
+    - no that is wrong
+    - you're wrong
+    return:
+    {{"valid": false, "reason": "feedback about previous answer, not a new Spotify analysis question"}}
 
-        filters:
-        artist, year, month, weekday, date, start_date, end_date
+    Use "artist_percentage" ONLY if the CURRENT question explicitly asks for:
+    - percent
+    - percentage
+    - share
+    - portion
+    - fraction
 
-        Conversation context:
-        {conversation_context}
+    If the CURRENT question asks for artist percentage/share/portion/fraction, return:
+    {{"intent":"artist_percentage","artists":["artist names"]}}
 
-        Use conversation context ONLY for follow-up references like:
-        him, her, them, that artist, that song, that time, that period, then, same time.
+    Do NOT use "artist_percentage" for questions about:
+    - minutes
+    - hours
+    - plays
+    - top songs
+    - listening time
 
-        Rules:
-        - Return JSON only.
-        - Do not explain or write Python.
-        - Do not perform calculations.
-        - Use actual JSON null values.
-        - Include all filter keys with null for unused filters.
-        - Only create plans supported by the available group_by, metric, and filters.
-        - Default limit = 10.
-        - Use limit = 100 for "list all", "show all", or "everything".
-        - Use sort="desc" for top/most/highest/longest.
-        - Use sort="asc" for least/lowest/shortest/smallest.
-        - Default sort = "desc".
+    - If the question requires unavailable data such as genre, mood, lyrics, or album information, return:
+    {{{{"unsupported": true, "reason": "brief reason"}}}}
 
-        Date handling:
-        - Exact dates use filters.date in YYYY-MM-DD.
-        - Date ranges NEVER use filters.date.
-        - Date ranges use filters.start_date and filters.end_date in YYYY-MM-DD.
-        - Correctly interpret ranges like:
-        - between July 10th and July 30th 2025
-        - from July 10th to July 30th
-        - July 10th - July 30th 2025
-        - If the user says "that time", "that period", "then", or "same time", use the latest date range from conversation context.
+    - Otherwise return:
+    {{"intent":"analysis","plan":{{...}}}}
 
-        Grouping:
-        - Use group_by="date" for exact/specific date/day questions.
-        - Use group_by="weekday" ONLY for weekday questions.
+    group_by:
+    artist, track, weekday, month, year, date
 
-        Multi-query:
-        - Use {{"type":"multi_aggregation"}} for multiple grouped results.
-        - Apply identical start_date/end_date filters to all queries in the same range.
+    metric:
+    minutes, plays
 
-        Unsupported data:
-        If the question requires unavailable data (genre, mood, lyrics, album), return:
-        {{"unsupported": true, "reason": "brief reason"}}
+    sort:
+    desc, asc
+
+    filters:
+    artist, track, year, month, weekday, date, start_date, end_date
+
+    Conversation context:
+    {conversation_context}
+
+    Use conversation context ONLY for follow-up references like:
+    him, her, them, they, that artist, that song, that time, that period, then, same time.
+
+    For follow-up questions like:
+    - "how many minutes did I listen to him?"
+    - "what songs did I listen to from her?"
+    - "when did I listen to them?"
+
+    Resolve the referenced artist from conversation context and place the resolved artist name into filters.artist.
+
+    For follow-up questions using "that song" or "it":
+    - Resolve the referenced song from conversation context.
+    - If the context includes an artist for that song, preserve the artist too.
+    - Put the song into filters.track.
+    - Put the artist into filters.artist.
+
+    For follow-up questions using "that time", "that period", "then", or "same time":
+    - Only use this rule if the CURRENT question does NOT contain an explicit date or date range.
+    - Resolve the most recent date range from conversation context.
+    - Put it into filters.start_date and filters.end_date.
+    - Do not drop previous date filters.
+
+    Rules:
+    - Return JSON only.
+    - Do not explain or write Python.
+    - Do not perform calculations.
+    - Use actual JSON null values.
+    - Include all filter keys with null for unused filters.
+    - Only create plans supported by the available group_by, metric, and filters.
+    - Default limit = 10.
+    - Use limit = 100 for "list all", "show all", or "everything".
+    - Use sort="desc" for top/most/highest/longest.
+    - Use sort="asc" for least/lowest/shortest/smallest.
+    - Default sort = "desc".
+
+    Date handling:
+    - Exact dates use filters.date in YYYY-MM-DD.
+    - Date ranges NEVER use filters.date.
+    - Date ranges use filters.start_date and filters.end_date in YYYY-MM-DD.
+    - Correctly interpret ranges like:
+    - between July 10th and July 30th 2025
+    - from July 10th to July 30th
+    - July 10th - July 30th 2025
+    - between April 10th, 2025, and April 22nd, 2025
+
+    Grouping:
+    - Use group_by="date" for:
+    - exact/specific date questions
+    - "what day did I listen to X"
+    - "which day did I listen to X"
+    - specific calendar-day questions
+    - Use group_by="weekday" ONLY if the user explicitly asks for a day of the week, such as:
+    - Monday
+    - Tuesday
+    - weekday
+    - weekend
+    - "what weekday"
+
+    Multi-query:
+    - Use {{"type":"multi_aggregation"}} for multiple grouped results.
+    - Apply identical start_date/end_date filters to all queries in the same range.
 
         Examples:
 
@@ -150,6 +131,7 @@ def get_planner_prompt(question, conversation_context=""):
             "limit": 1,
             "filters": {{
                 "artist": null,
+                "track": null,
                 "year": null,
                 "month": null,
                 "weekday": null,
@@ -164,6 +146,7 @@ def get_planner_prompt(question, conversation_context=""):
             "limit": 1,
             "filters": {{
                 "artist": null,
+                "track": null,
                 "year": null,
                 "month": null,
                 "weekday": null,
@@ -182,6 +165,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 1,
         "filters": {{
             "artist": "Ed Sheeran",
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
@@ -201,6 +185,7 @@ def get_planner_prompt(question, conversation_context=""):
             "limit": 10,
             "filters": {{
                 "artist": null,
+                "track": null,
                 "year": null,
                 "month": null,
                 "weekday": null,
@@ -215,6 +200,7 @@ def get_planner_prompt(question, conversation_context=""):
             "limit": 1,
             "filters": {{
                 "artist": null,
+                "track": null,
                 "year": null,
                 "month": null,
                 "weekday": null,
@@ -233,12 +219,30 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 10,
         "filters": {{
             "artist": null,
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
             "date": null,
             "start_date": "2025-07-12",
             "end_date": "2025-07-16"
+        }}
+        }}
+
+        Question: How much music did I listen to between April 10th, 2025, and April 22nd, 2025?
+        {{
+        "group_by": "date",
+        "metric": "minutes",
+        "limit": 10,
+        "filters": {{
+            "artist": null,
+            "track": null,
+            "year": null,
+            "month": null,
+            "weekday": null,
+            "date": null,
+            "start_date": "2025-04-10",
+            "end_date": "2025-04-22"
         }}
         }}
 
@@ -249,6 +253,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 10,
         "filters": {{
             "artist": null,
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
@@ -265,6 +270,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 10,
         "filters": {{
             "artist": null,
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
@@ -281,6 +287,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 10,
         "filters": {{
             "artist": null,
+            "track": null,
             "year": 2023,
             "month": null,
             "weekday": null,
@@ -297,6 +304,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 7,
         "filters": {{
             "artist": "Ed Sheeran",
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
@@ -314,6 +322,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 10,
         "filters": {{
             "artist": null,
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
@@ -331,6 +340,7 @@ def get_planner_prompt(question, conversation_context=""):
         "limit": 10,
         "filters": {{
             "artist": null,
+            "track": null,
             "year": null,
             "month": null,
             "weekday": null,
@@ -356,51 +366,15 @@ def get_planner_prompt(question, conversation_context=""):
         {question}
     """
 
-def get_clarification_prompt(question):
-    return f"""
-        You are helping a user ask better questions about their Spotify listening history.
-
-        The user asked:
-        {question}
-
-        Explain briefly why the question is unclear in a friendly, conversational way, and suggest 2-3 better questions the user can ask.
-
-        You MUST only suggest questions that this system can answer, such as:
-        - top artists or songs
-        - listening time (minutes or hours)
-        - listening on a specific date
-        - listening between dates
-        - listening by a specific artist
-
-        Rules:
-        - Be friendly and conversational.
-        - Do NOT sound critical or formal.
-        - Do NOT mention JSON, code, or analysis plans.
-        - Do NOT suggest generic or meta questions (like "what can you do").
-        - Give concrete, specific example questions.
-        - Keep it under 3 sentences.
-
-        Example style:
-        "I'm not sure what you're looking for. Try asking something like:
-        - 'Who are my top artists?'
-        - 'How many minutes did I listen to music?'"
-
-        Examples of GOOD suggestions:
-        - "Who are my top artists?"
-        - "How many minutes did I listen to Ed Sheeran?"
-        - "What songs did I listen to on 5/26/2025?"
-
-        Examples of BAD suggestions:
-        - "What can you help me with?"
-        - "Tell me about my data"
-    """
-
-def get_explanation_prompt(question, analysis_result):
+def get_explanation_prompt(question, analysis_result, plan):
     return f"""
         You are a Spotify listening history analyst.
 
         The user asked:
         {question}
+
+        Plan used:
+        {json.dumps(plan, indent=2)}
 
         Python computed this result:
         {json.dumps(analysis_result, indent=2)}
@@ -419,6 +393,8 @@ def get_explanation_prompt(question, analysis_result):
         - If the result contains multiple queries, answer each part clearly.
         - If multiple query results are provided, keep each query's totals separate.
         - Do not describe total_minutes as applying to a subgroup unless it came from that subgroup's query result.
+        - When group_by="date", total_minutes represents the sum across all returned dates, not a single song/day unless explicitly filtered.
+        - Do not describe total_minutes as song listening time unless filters.track or filters.artist explicitly restrict the query.
         - Only answer the current question.
         - Do not assume context from previous questions.
         - Do not mention filters unless necessary.

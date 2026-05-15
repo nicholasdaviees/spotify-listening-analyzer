@@ -13,7 +13,7 @@ def ms_to_days(ms):
     return ms / 86400000
 
 def has_filter(filters, key):
-    # Available filters: artist, year, month, weekday, date, start_date, end_date
+    # Available filters: artist, track, year, month, weekday, date, start_date, end_date
     # Example: 
         # "filters": {{
         #    "artist": "Ed Sheeran",
@@ -133,6 +133,16 @@ def run_analysis_query(raw_listening_history, plan):
             actual_artist = artist.lower() if artist else ""
 
             similarity = difflib.SequenceMatcher(None, query_artist, actual_artist).ratio() # Fuzzy matching
+
+            if similarity < 0.7:
+                continue
+
+        # Track filter
+        if has_filter(filters, "track"):
+            query_track = filters["track"].lower()
+            actual_track = track.lower() if track else ""
+
+            similarity = difflib.SequenceMatcher(None, query_track, actual_track).ratio()
 
             if similarity < 0.7:
                 continue

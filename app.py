@@ -18,10 +18,7 @@ from services.analysis import (
 )
 
 from services.prompts import (
-    get_artist_percentage_intent_prompt,
-    get_clarification_prompt,
     get_explanation_prompt,
-    get_clarity_prompt,
     get_planner_prompt,
 )
 
@@ -94,8 +91,17 @@ def upload_files():
             else:
                 print(f"{file.filename} is not a list")
 
+        except json.JSONDecodeError as e:
+            return render_template(
+                "index.html",
+                error=f"ERROR: {file.filename} is not valid JSON. Please fix or remove this file."
+            )
+
         except Exception as e:
-            print(f"Error reading {file.filename}: {e}")
+            return render_template(
+                "index.html",
+                error=f"ERROR: Could not read {file.filename}: {e}"
+    )
 
     # Error checking to make sure date filters are correct
     if start_date is not None or end_date is not None:
@@ -160,113 +166,12 @@ def ask_llm():
             original_question
         )
     
-    clarity_prompt = get_clarity_prompt(original_question)
-
-    clarity_response = ollama.chat(
-        model="qwen2.5:3b",
-        messages=[{"role": "user", "content": clarity_prompt}],
-        options={"temperature": 0}
-    )
-
-    decision = clarity_response["message"]["content"].strip().lower()
-
-    if "no" in decision:
-        clarification_prompt = get_clarification_prompt(original_question)
-
-        clarification_response = ollama.chat(
-            model="qwen2.5:14b",
-            messages=[{"role": "user", "content": clarification_prompt}]
-        )
-
-        answer = clarification_response["message"]["content"]
-        return return_with_memory(answer, original_question)
-    
-    question = question.lower()
-
-    # BEGIN DEAL WITH PERCETAGE QUESTIONS
-    intent_prompt = get_artist_percentage_intent_prompt(
-        original_question,
-        conversation_context
-    )
-
-    intent_response = ollama.chat(
-        model="qwen2.5:14b",
-        messages=[{"role": "user", "content": intent_prompt}],
-        options={"temperature": 0}
-    )
-
-    # Clean up response
-    raw_intent = intent_response["message"]["content"].strip()
-    raw_intent = raw_intent.replace("```json", "").replace("```", "").strip()
-
-    # Ensure correct JSON parsing
-    try:
-        intent_plan = json.loads(raw_intent)
-    except Exception:
-        intent_plan = {"intent": "other"}
-
-    if intent_plan.get("intent") == "artist_percentage":
-        artists = intent_plan.get("artists", []) # Will pull any number of artist mentioned
-
-        if not artists:
-            return return_with_memory(
-                "Which artist do you want the percentage for?",
-                original_question
-            )
-
-        results = []
-        total_percent = 0
-        total_minutes = 0
-
-        # BEGIN FOR LOOP
-        # Compute percentage for each artist in list
-        for artist in artists:
-            data = compute_artist_percentage(DASHBOARD_RESULT, artist)
-            # compute_artist_percentage() returns something like: 
-            # {
-            #    "artist": matched_artist,
-            #    "minutes": artist_minutes,
-            #    "total": total_minutes,
-            #    "percent": artist_percentage
-            # }
-
-            if "error" in data:
-                return return_with_memory(
-                    data["error"],
-                    original_question
-                )
-
-            results.append(data)
-            total_percent += data["percent"]
-            total_minutes += data["minutes"]
-        # END FOR LOOP
-
-        # For only single artist request
-        if len(results) == 1:
-            singleArtist = results[0]
-            return return_with_memory(
-                f"{singleArtist['artist']} accounts for {singleArtist['percent']}% of your total listening time.",
-                original_question
-            )
-
-        # For multiple artist request
-        multipleArtists = ", ".join(data["artist"] for data in results)
-
-        return return_with_memory(
-            f"{multipleArtists} together account for {round(total_percent, 2)}% of your total listening time, with {round(total_minutes, 2)} minutes combined.",
-            original_question
-        )
-    # END DEAL WITH PERCENTAGE QUESTIONS
-    
     # Convert user question into structured JSON for run_analysis_query()
-    planner_prompt = get_planner_prompt(
-        original_question,
-        conversation_context
-    )
+    planner_prompt = get_planner_prompt(original_question, conversation_context)
 
     # Call LLM to get analysis plan
     planner_response = ollama.chat(
-        model="qwen2.5:14b",
+        model="qwen2.5:7b",
         messages=[{"role": "user", "content": planner_prompt}]
     )
 
@@ -274,9 +179,18 @@ def ask_llm():
     raw_plan = planner_response["message"]["content"].strip()
     raw_plan = raw_plan.replace("```json", "").replace("```", "").strip()
 
-    # Ensure correct JSON parsing
     try:
         plan = json.loads(raw_plan)
+
+        if plan.get("valid") is False:
+            return return_with_memory(
+                "Well this is awkward. I'm not sure I understand your question. Try rephrasing the Spotify question, or ask one of these:\n\n"
+                "Try asking things like:\n"
+                "- What songs did I listen to most in 2025?\n"
+                "- Who was my least played artist?\n"
+                "- What day did I listen to Ed Sheeran the most?",
+                original_question
+            )
 
         if plan.get("unsupported"):
             return return_with_memory(
@@ -284,17 +198,69 @@ def ask_llm():
                 original_question
             )
 
+        if plan.get("intent") == "artist_percentage":
+            artists = plan.get("artists", [])
+
+            if not artists:
+                return return_with_memory(
+                    "Which artist do you want the percentage for?",
+                    original_question
+                )
+
+            results = []
+            total_percent = 0
+            total_minutes = 0
+
+            for artist in artists:
+                data = compute_artist_percentage(DASHBOARD_RESULT, artist)
+
+                if "error" in data:
+                    return return_with_memory(data["error"], original_question)
+
+                results.append(data)
+                total_percent += data["percent"]
+                total_minutes += data["minutes"]
+
+            if len(results) == 1:
+                singleArtist = results[0]
+                return return_with_memory(
+                    f"{singleArtist['artist']} accounts for {singleArtist['percent']}% of your total listening time.",
+                    original_question
+                )
+
+            multipleArtists = ", ".join(data["artist"] for data in results)
+
+            return return_with_memory(
+                f"{multipleArtists} together account for {round(total_percent, 2)}% of your total listening time, with {round(total_minutes, 2)} minutes combined.",
+                original_question
+            )
+
+        if plan.get("intent") == "analysis":
+            plan = plan.get("plan", plan)
+
+        if not plan.get("group_by") and plan.get("plan"):
+            plan = plan["plan"]
+
+        plan.setdefault("filters", {})
+        plan["filters"].setdefault("artist", None)
+        plan["filters"].setdefault("track", None)
+        plan["filters"].setdefault("year", None)
+        plan["filters"].setdefault("month", None)
+        plan["filters"].setdefault("weekday", None)
+        plan["filters"].setdefault("date", None)
+        plan["filters"].setdefault("start_date", None)
+        plan["filters"].setdefault("end_date", None)
+
+        if (
+            plan.get("group_by") == "artist"
+            and plan["filters"].get("artist")
+            and "top" in original_question.lower()
+        ):
+            plan["filters"]["artist"] = None
+
         question = question.lower()
 
         # Perform minor correections
-        if (
-            ("how many minutes" in question or "total" in question)
-            and ("between" in question or "-" in question or "from" in question)
-            and plan.get("type") != "multi_aggregation"
-        ):
-            plan["group_by"] = "artist"
-            plan["limit"] = 1
-
         if "specific day" in question or "exact day" in question or "which date" in question:
             plan["group_by"] = "date"
             plan["limit"] = 1
@@ -304,7 +270,7 @@ def ask_llm():
             question
         )
 
-        if date_range_match and plan.get("type") != "multi_aggregation":
+        if date_range_match:
             start_raw = date_range_match.group(1)
             end_raw = date_range_match.group(2)
 
@@ -327,16 +293,10 @@ def ask_llm():
                     filters["start_date"], filters["end_date"] = end_date, start_date
 
     except Exception:
-        # Allow LLM to suggest a better question for user
-        clarification_prompt = get_clarification_prompt(original_question)
-
-        clarification_response = ollama.chat(
-            model="qwen2.5:14b",
-            messages=[{"role": "user", "content": clarification_prompt}]
+        return return_with_memory(
+            "I'm not sure how to answer that. Try asking about your top artists, top songs, listening time, a date, or a date range.",
+            original_question
         )
-
-        answer = clarification_response["message"]["content"]
-        return return_with_memory(answer, original_question)
     
     # For multiple queries
     if plan.get("type") == "multi_aggregation":
@@ -349,12 +309,13 @@ def ask_llm():
 
     # For single query
     else:
+        print("FINAL PLAN:", json.dumps(plan, indent=2))
         analysis_result = run_analysis_query(RAW_LISTENING_HISTORY, plan)
 
-    explanation_prompt = get_explanation_prompt(question, analysis_result)
+    explanation_prompt = get_explanation_prompt(question, analysis_result, plan)
 
     explanation_response = ollama.chat(
-        model="qwen2.5:14b",
+        model="qwen2.5:7b",
         messages=[{"role": "user", "content": explanation_prompt}]
     )
 
